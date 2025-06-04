@@ -15,6 +15,7 @@
             this.loadPost();
             this.setupAutoSave();
             this.setupTagsAutocomplete();
+            this.setupMediaUpload();
         },
 
         // 绑定事件
@@ -70,6 +71,15 @@
                 self.addQuickTag(tagName);
             });
 
+            // 图片管理按钮
+            $('#open-media-library, #upload-image').on('click', function() {
+                self.openMediaLibrary();
+            });
+
+            $('#insert-image-url').on('click', function() {
+                self.handleToolbarAction('image');
+            });
+
             // 保存按钮 (支持头部和侧边栏按钮)
             $('#save-draft, #save-draft-sidebar').on('click', function() {
                 self.savePost('draft');
@@ -108,6 +118,10 @@
                         case 73: // Ctrl+I
                             e.preventDefault();
                             self.handleToolbarAction('italic');
+                            break;
+                        case 85: // Ctrl+U
+                            e.preventDefault();
+                            self.openMediaLibrary();
                             break;
                     }
                 }
@@ -240,6 +254,181 @@
                     $('#tags-suggestions').hide();
                 }
             });
+        },
+
+        // 设置媒体上传
+        setupMediaUpload: function() {
+            const self = this;
+            
+            // 检查wp.media是否可用
+            if (typeof wp === 'undefined' || typeof wp.media === 'undefined') {
+                console.warn('WordPress媒体库不可用');
+                return;
+            }
+            
+            // 创建媒体框架实例
+            this.mediaFrame = wp.media({
+                title: wpMarkdownEditor.strings.selectImage,
+                button: {
+                    text: wpMarkdownEditor.strings.insertImage
+                },
+                multiple: false,
+                library: {
+                    type: 'image'
+                }
+            });
+            
+            // 当媒体被选择时
+            this.mediaFrame.on('select', function() {
+                const attachment = self.mediaFrame.state().get('selection').first().toJSON();
+                self.insertImageFromMedia(attachment);
+            });
+            
+            // 设置拖拽上传
+            this.setupDragUpload();
+        },
+
+        // 设置拖拽上传
+        setupDragUpload: function() {
+            const self = this;
+            const $editor = $('#markdown-editor');
+            
+            // 防止默认的拖拽行为
+            $editor.on('dragover dragenter', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).addClass('drag-over');
+            });
+            
+            $editor.on('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).removeClass('drag-over');
+            });
+            
+            // 处理文件拖拽放置
+            $editor.on('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).removeClass('drag-over');
+                
+                const files = e.originalEvent.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    
+                    // 检查是否为图片文件
+                    if (file.type.startsWith('image/')) {
+                        self.uploadFileToMedia(file, e.originalEvent.target.selectionStart);
+                    } else {
+                        alert('请拖拽图片文件');
+                    }
+                }
+            });
+        },
+
+        // 上传文件到媒体库
+        uploadFileToMedia: function(file, cursorPosition) {
+            const self = this;
+            
+            // 创建FormData
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('action', 'upload_image_for_markdown');
+            formData.append('nonce', wpMarkdownEditor.nonce);
+            
+            // 显示上传状态
+            const $status = $('#save-status');
+            $status.text('上传图片中...').addClass('saving');
+            
+            // 使用自定义的AJAX上传处理器
+            $.ajax({
+                url: wpMarkdownEditor.ajaxUrl,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success && response.data && response.data.url) {
+                        // 构建Markdown图片语法
+                        const altText = response.data.alt || response.data.title || response.data.filename.replace(/\.[^/.]+$/, "");
+                        const markdownImage = `![${altText}](${response.data.url})`;
+                        
+                        // 插入到指定位置
+                        const textarea = $('#markdown-editor')[0];
+                        const currentValue = textarea.value;
+                        const before = currentValue.substring(0, cursorPosition || 0);
+                        const after = currentValue.substring(cursorPosition || 0);
+                        
+                        textarea.value = before + markdownImage + after;
+                        
+                        // 设置光标位置
+                        const newCursorPos = (cursorPosition || 0) + markdownImage.length;
+                        textarea.focus();
+                        textarea.selectionStart = textarea.selectionEnd = newCursorPos;
+                        
+                        // 更新预览和统计
+                        self.updatePreview();
+                        self.updateCounts();
+                        self.markAsChanged();
+                        
+                        $status.text('图片上传成功').removeClass('saving').addClass('saved');
+                        setTimeout(function() {
+                            $status.text('').removeClass('saved');
+                        }, 3000);
+                    } else {
+                        const errorMsg = response.data || '未知错误';
+                        $status.text('图片上传失败: ' + errorMsg).removeClass('saving').addClass('error');
+                        setTimeout(function() {
+                            $status.text('').removeClass('error');
+                        }, 5000);
+                        console.error('上传失败:', response);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $status.text('图片上传失败: 网络错误').removeClass('saving').addClass('error');
+                    setTimeout(function() {
+                        $status.text('').removeClass('error');
+                    }, 5000);
+                    console.error('上传错误:', xhr.responseText);
+                }
+            });
+        },
+
+        // 从媒体库插入图片
+        insertImageFromMedia: function(attachment) {
+            const textarea = $('#markdown-editor')[0];
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            
+            // 构建Markdown图片语法
+            const altText = selectedText || attachment.alt || attachment.title || '图片';
+            const imageUrl = attachment.url;
+            const markdownImage = `![${altText}](${imageUrl})`;
+            
+            // 插入到编辑器
+            textarea.value = textarea.value.substring(0, start) + 
+                           markdownImage + 
+                           textarea.value.substring(end);
+            
+            // 设置光标位置到图片后面
+            const newCursorPos = start + markdownImage.length;
+            textarea.focus();
+            textarea.selectionStart = textarea.selectionEnd = newCursorPos;
+            
+            // 更新预览和统计
+            this.updatePreview();
+            this.updateCounts();
+            this.markAsChanged();
+        },
+
+        // 打开媒体库
+        openMediaLibrary: function() {
+            if (this.mediaFrame) {
+                this.mediaFrame.open();
+            } else {
+                console.warn('媒体框架未初始化');
+            }
         },
 
         // 显示标签建议
@@ -480,6 +669,10 @@
                         return;
                     }
                     break;
+                case 'media':
+                    // 打开WordPress媒体库
+                    this.openMediaLibrary();
+                    return; // 不需要继续处理文本替换
                 case 'image':
                     const imgUrl = prompt('请输入图片地址:', 'http://');
                     if (imgUrl) {

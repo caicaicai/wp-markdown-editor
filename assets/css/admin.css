@@ -357,6 +357,39 @@
     color: #333;
 }
 
+/* 图片管理卡片 */
+.image-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.button-full {
+    width: 100%;
+    text-align: left;
+    justify-content: flex-start;
+}
+
+.button-full .dashicons {
+    margin-right: 6px;
+}
+
+.image-tips {
+    border-top: 1px solid #e1e1e1;
+    padding-top: 12px;
+    margin-top: 12px;
+}
+
+.image-tips .description {
+    margin-bottom: 8px;
+    font-size: 11px;
+}
+
+.image-tips .description:last-child {
+    margin-bottom: 0;
+}
+
 .no-items {
     color: #999;
     font-style: italic;
@@ -463,6 +496,23 @@
     height: 16px;
 }
 
+/* 媒体上传按钮特殊样式 */
+.toolbar-button[data-action="media"] {
+    background: #f0f6fc;
+    border-color: #007cba;
+    color: #007cba;
+}
+
+.toolbar-button[data-action="media"]:hover {
+    background: #007cba;
+    color: #fff;
+    border-color: #005a87;
+}
+
+.toolbar-button[data-action="media"]:active {
+    background: #005a87;
+}
+
 /* Markdown编辑器 */
 #markdown-editor {
     flex: 1;
@@ -476,10 +526,34 @@
     background: #fff;
     color: #333;
     tab-size: 4;
+    transition: all 0.2s ease;
 }
 
 #markdown-editor:focus {
     background: #fafafa;
+}
+
+/* 拖拽状态样式 */
+#markdown-editor.drag-over {
+    background: #f0f6fc;
+    border: 2px dashed #007cba;
+    border-radius: 4px;
+}
+
+#markdown-editor.drag-over::after {
+    content: '拖拽图片到此处上传';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 124, 186, 0.9);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    pointer-events: none;
+    z-index: 10;
 }
 
 /* 预览区域 */

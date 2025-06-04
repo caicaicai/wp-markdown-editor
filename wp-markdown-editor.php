@@ -64,6 +64,7 @@ class WP_Markdown_Editor {
         add_action('wp_ajax_save_markdown_post', array($this, 'save_markdown_post'));
         add_action('wp_ajax_get_markdown_post', array($this, 'get_markdown_post'));
         add_action('wp_ajax_create_new_category', array($this, 'create_new_category'));
+        add_action('wp_ajax_upload_image_for_markdown', array($this, 'upload_image_for_markdown'));
         
         // 添加自定义post meta
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
@@ -155,6 +156,9 @@ class WP_Markdown_Editor {
     public function enqueue_admin_scripts($hook) {
         // 只在Markdown编辑器页面加载脚本
         if (strpos($hook, 'wp-markdown-editor') !== false) {
+            // 加载WordPress媒体库脚本
+            wp_enqueue_media();
+            
             // 加载样式
             wp_enqueue_style(
                 'wp-markdown-editor-admin',
@@ -167,7 +171,7 @@ class WP_Markdown_Editor {
             wp_enqueue_script(
                 'wp-markdown-editor-admin',
                 WP_MARKDOWN_EDITOR_PLUGIN_URL . 'assets/js/admin.js',
-                array('jquery'),
+                array('jquery', 'media-upload', 'media-views'),
                 WP_MARKDOWN_EDITOR_VERSION,
                 true
             );
@@ -189,6 +193,9 @@ class WP_Markdown_Editor {
                     'saving' => __('保存中...', 'wp-markdown-editor'),
                     'saved' => __('已保存', 'wp-markdown-editor'),
                     'error' => __('保存失败', 'wp-markdown-editor'),
+                    'selectImage' => __('选择图片', 'wp-markdown-editor'),
+                    'insertImage' => __('插入图片', 'wp-markdown-editor'),
+                    'uploadImage' => __('上传图片', 'wp-markdown-editor'),
                 )
             ));
         }
@@ -399,6 +406,113 @@ class WP_Markdown_Editor {
             'description' => $term->description,
             'message' => __('分类创建成功', 'wp-markdown-editor')
         ));
+    }
+    
+    /**
+     * 上传图片到媒体库
+     */
+    public function upload_image_for_markdown() {
+        // 验证nonce
+        if (!wp_verify_nonce($_POST['nonce'], 'wp_markdown_editor_nonce')) {
+            wp_die(__('安全验证失败', 'wp-markdown-editor'));
+        }
+        
+        // 检查权限
+        if (!current_user_can('upload_files')) {
+            wp_send_json_error(__('您没有权限上传文件', 'wp-markdown-editor'));
+            return;
+        }
+        
+        // 检查是否有文件上传
+        if (empty($_FILES['file'])) {
+            wp_send_json_error(__('没有选择文件', 'wp-markdown-editor'));
+            return;
+        }
+        
+        $file = $_FILES['file'];
+        
+        // 检查文件类型
+        $allowed_types = array('image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp');
+        if (!in_array($file['type'], $allowed_types)) {
+            wp_send_json_error(__('不支持的文件类型', 'wp-markdown-editor'));
+            return;
+        }
+        
+        // 检查文件大小 (默认最大5MB)
+        $max_size = 5 * 1024 * 1024; // 5MB
+        if ($file['size'] > $max_size) {
+            wp_send_json_error(__('文件大小超过限制', 'wp-markdown-editor'));
+            return;
+        }
+        
+        // 引入WordPress文件处理函数
+        if (!function_exists('wp_handle_upload')) {
+            require_once(ABSPATH . 'wp-admin/includes/file.php');
+        }
+        
+        // 设置上传参数
+        $upload_overrides = array(
+            'test_form' => false,
+            'unique_filename_callback' => array($this, 'unique_filename_callback')
+        );
+        
+        // 处理文件上传
+        $uploaded_file = wp_handle_upload($file, $upload_overrides);
+        
+        if (isset($uploaded_file['error'])) {
+            wp_send_json_error($uploaded_file['error']);
+            return;
+        }
+        
+        // 获取文件信息
+        $file_path = $uploaded_file['file'];
+        $file_url = $uploaded_file['url'];
+        $file_type = $uploaded_file['type'];
+        
+        // 创建附件
+        $attachment = array(
+            'guid' => $file_url,
+            'post_mime_type' => $file_type,
+            'post_title' => preg_replace('/\.[^.]+$/', '', basename($file_path)),
+            'post_content' => '',
+            'post_status' => 'inherit'
+        );
+        
+        // 插入附件到数据库
+        $attachment_id = wp_insert_attachment($attachment, $file_path);
+        
+        if (is_wp_error($attachment_id)) {
+            wp_send_json_error(__('附件创建失败', 'wp-markdown-editor'));
+            return;
+        }
+        
+        // 生成附件元数据
+        if (!function_exists('wp_generate_attachment_metadata')) {
+            require_once(ABSPATH . 'wp-admin/includes/image.php');
+        }
+        
+        $attachment_data = wp_generate_attachment_metadata($attachment_id, $file_path);
+        wp_update_attachment_metadata($attachment_id, $attachment_data);
+        
+        // 返回成功信息
+        wp_send_json_success(array(
+            'id' => $attachment_id,
+            'url' => $file_url,
+            'filename' => basename($file_path),
+            'alt' => get_post_meta($attachment_id, '_wp_attachment_image_alt', true),
+            'title' => get_the_title($attachment_id),
+            'message' => __('图片上传成功', 'wp-markdown-editor')
+        ));
+    }
+    
+    /**
+     * 自定义文件名回调
+     */
+    public function unique_filename_callback($dir, $name, $ext) {
+        // 添加时间戳和随机数确保文件名唯一
+        $time = current_time('timestamp');
+        $random = wp_rand(1000, 9999);
+        return $time . '_' . $random . '_' . $name;
     }
     
     /**

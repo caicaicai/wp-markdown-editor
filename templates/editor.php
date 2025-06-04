@@ -125,7 +125,10 @@ $tags = get_tags(array(
                             <button type="button" class="toolbar-button" data-action="link" title="<?php _e('链接', 'wp-markdown-editor'); ?>">
                                 <span class="dashicons dashicons-admin-links"></span>
                             </button>
-                            <button type="button" class="toolbar-button" data-action="image" title="<?php _e('图片', 'wp-markdown-editor'); ?>">
+                            <button type="button" class="toolbar-button" data-action="media" title="<?php _e('上传图片', 'wp-markdown-editor'); ?>">
+                                <span class="dashicons dashicons-admin-media"></span>
+                            </button>
+                            <button type="button" class="toolbar-button" data-action="image" title="<?php _e('插入图片链接', 'wp-markdown-editor'); ?>">
                                 <span class="dashicons dashicons-format-image"></span>
                             </button>
                             <button type="button" class="toolbar-button" data-action="code" title="<?php _e('代码', 'wp-markdown-editor'); ?>">
@@ -276,6 +279,37 @@ $tags = get_tags(array(
                             </div>
                         </div>
                         <?php endif; ?>
+                    </div>
+                </div>
+                
+                <!-- 图片管理卡片 -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><?php _e('图片', 'wp-markdown-editor'); ?></h3>
+                        <button type="button" class="button button-small" id="open-media-library">
+                            <?php _e('媒体库', 'wp-markdown-editor'); ?>
+                        </button>
+                    </div>
+                    <div class="card-content">
+                        <div class="image-actions">
+                            <button type="button" class="button button-small button-full" id="upload-image">
+                                <span class="dashicons dashicons-upload"></span>
+                                <?php _e('上传图片', 'wp-markdown-editor'); ?>
+                            </button>
+                            <button type="button" class="button button-small button-full" id="insert-image-url">
+                                <span class="dashicons dashicons-admin-links"></span>
+                                <?php _e('插入图片链接', 'wp-markdown-editor'); ?>
+                            </button>
+                        </div>
+                        <div class="image-tips">
+                            <p class="description">
+                                <?php _e('支持拖拽图片到编辑器区域快速插入', 'wp-markdown-editor'); ?>
+                            </p>
+                            <p class="description">
+                                <strong><?php _e('快捷键:', 'wp-markdown-editor'); ?></strong>
+                                Ctrl+U <?php _e('上传图片', 'wp-markdown-editor'); ?>
+                            </p>
+                        </div>
                     </div>
                 </div>
                 
