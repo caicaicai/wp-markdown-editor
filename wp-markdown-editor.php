@@ -6,7 +6,7 @@
  * Version: 1.0.0
  * Author: xiaocaicai
  * License: GPL v2 or later
- * Text Domain: wp-markdown-editor
+ * Text Domain: advanced-markdown-editor
  * Domain Path: /languages
  */
 
@@ -95,7 +95,7 @@ class WP_Markdown_Editor {
      */
     public function init_plugin() {
         // 加载文本域
-        load_plugin_textdomain('wp-markdown-editor', false, dirname(plugin_basename(__FILE__)) . '/languages');
+        load_plugin_textdomain('advanced-markdown-editor', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
     
     /**
@@ -122,8 +122,8 @@ class WP_Markdown_Editor {
         
         // 添加主菜单项
         add_menu_page(
-            __('Markdown 编辑器', 'wp-markdown-editor'),
-            __('Markdown 编辑器', 'wp-markdown-editor'),
+            __('Markdown 编辑器', 'advanced-markdown-editor'),
+            __('Markdown 编辑器', 'advanced-markdown-editor'),
             'edit_posts',
             'wp-markdown-editor',
             array($this, 'markdown_editor_page'),
@@ -134,8 +134,8 @@ class WP_Markdown_Editor {
         // 添加子菜单项
         add_submenu_page(
             'wp-markdown-editor',
-            __('新建文章', 'wp-markdown-editor'),
-            __('新建文章', 'wp-markdown-editor'),
+            __('新建文章', 'advanced-markdown-editor'),
+            __('新建文章', 'advanced-markdown-editor'),
             'edit_posts',
             'wp-markdown-editor-new',
             array($this, 'markdown_editor_page')
@@ -143,8 +143,8 @@ class WP_Markdown_Editor {
         
         add_submenu_page(
             'wp-markdown-editor',
-            __('文章列表', 'wp-markdown-editor'),
-            __('文章列表', 'wp-markdown-editor'),
+            __('文章列表', 'advanced-markdown-editor'),
+            __('文章列表', 'advanced-markdown-editor'),
             'edit_posts',
             'edit.php'
         );
@@ -190,12 +190,12 @@ class WP_Markdown_Editor {
                 'ajaxUrl' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('wp_markdown_editor_nonce'),
                 'strings' => array(
-                    'saving' => __('保存中...', 'wp-markdown-editor'),
-                    'saved' => __('已保存', 'wp-markdown-editor'),
-                    'error' => __('保存失败', 'wp-markdown-editor'),
-                    'selectImage' => __('选择图片', 'wp-markdown-editor'),
-                    'insertImage' => __('插入图片', 'wp-markdown-editor'),
-                    'uploadImage' => __('上传图片', 'wp-markdown-editor'),
+                    'saving' => __('保存中...', 'advanced-markdown-editor'),
+                    'saved' => __('已保存', 'advanced-markdown-editor'),
+                    'error' => __('保存失败', 'advanced-markdown-editor'),
+                    'selectImage' => __('选择图片', 'advanced-markdown-editor'),
+                    'insertImage' => __('插入图片', 'advanced-markdown-editor'),
+                    'uploadImage' => __('上传图片', 'advanced-markdown-editor'),
                 )
             ));
         }
@@ -211,7 +211,7 @@ class WP_Markdown_Editor {
         if ($post_id) {
             $post = get_post($post_id);
             if (!$post || !current_user_can('edit_post', $post_id)) {
-                wp_die(__('您没有权限编辑此文章。', 'wp-markdown-editor'));
+                wp_die(__('您没有权限编辑此文章。', 'advanced-markdown-editor'));
             }
         }
         
@@ -224,12 +224,12 @@ class WP_Markdown_Editor {
     public function save_markdown_post() {
         // 验证nonce
         if (!wp_verify_nonce($_POST['nonce'], 'wp_markdown_editor_nonce')) {
-            wp_die(__('安全验证失败', 'wp-markdown-editor'));
+            wp_die(__('安全验证失败', 'advanced-markdown-editor'));
         }
         
         // 检查权限
         if (!current_user_can('edit_posts')) {
-            wp_die(__('权限不足', 'wp-markdown-editor'));
+            wp_die(__('权限不足', 'advanced-markdown-editor'));
         }
         
         $post_id = intval($_POST['post_id']);
@@ -275,7 +275,7 @@ class WP_Markdown_Editor {
         if ($post_id) {
             // 检查编辑权限
             if (!current_user_can('edit_post', $post_id)) {
-                wp_send_json_error(__('您没有权限编辑此文章', 'wp-markdown-editor'));
+                wp_send_json_error(__('您没有权限编辑此文章', 'advanced-markdown-editor'));
                 return;
             }
             
@@ -302,10 +302,10 @@ class WP_Markdown_Editor {
             
             wp_send_json_success(array(
                 'post_id' => $result,
-                'message' => __('文章保存成功', 'wp-markdown-editor')
+                'message' => __('文章保存成功', 'advanced-markdown-editor')
             ));
         } else {
-            wp_send_json_error(__('文章保存失败', 'wp-markdown-editor'));
+            wp_send_json_error(__('文章保存失败', 'advanced-markdown-editor'));
         }
     }
     
@@ -315,14 +315,14 @@ class WP_Markdown_Editor {
     public function get_markdown_post() {
         // 验证nonce
         if (!wp_verify_nonce($_POST['nonce'], 'wp_markdown_editor_nonce')) {
-            wp_die(__('安全验证失败', 'wp-markdown-editor'));
+            wp_die(__('安全验证失败', 'advanced-markdown-editor'));
         }
         
         $post_id = intval($_POST['post_id']);
         $post = get_post($post_id);
         
         if (!$post || !current_user_can('edit_post', $post_id)) {
-            wp_send_json_error(__('文章不存在或权限不足', 'wp-markdown-editor'));
+            wp_send_json_error(__('文章不存在或权限不足', 'advanced-markdown-editor'));
         }
         
         $markdown_content = get_post_meta($post_id, '_markdown_content', true);
@@ -340,12 +340,12 @@ class WP_Markdown_Editor {
     public function create_new_category() {
         // 验证nonce
         if (!wp_verify_nonce($_POST['nonce'], 'wp_markdown_editor_nonce')) {
-            wp_die(__('安全验证失败', 'wp-markdown-editor'));
+            wp_die(__('安全验证失败', 'advanced-markdown-editor'));
         }
         
         // 检查权限
         if (!current_user_can('manage_categories')) {
-            wp_send_json_error(__('您没有权限创建分类', 'wp-markdown-editor'));
+            wp_send_json_error(__('您没有权限创建分类', 'advanced-markdown-editor'));
             return;
         }
         
@@ -356,20 +356,20 @@ class WP_Markdown_Editor {
         
         // 验证分类名称
         if (empty($category_name)) {
-            wp_send_json_error(__('分类名称不能为空', 'wp-markdown-editor'));
+            wp_send_json_error(__('分类名称不能为空', 'advanced-markdown-editor'));
             return;
         }
         
         // 检查分类名称是否已存在
         if (term_exists($category_name, 'category')) {
-            wp_send_json_error(__('分类名称已存在', 'wp-markdown-editor'));
+            wp_send_json_error(__('分类名称已存在', 'advanced-markdown-editor'));
             return;
         }
         
         // 验证父级分类
         if ($category_parent > 0) {
             if (!term_exists($category_parent, 'category')) {
-                wp_send_json_error(__('父级分类不存在', 'wp-markdown-editor'));
+                wp_send_json_error(__('父级分类不存在', 'advanced-markdown-editor'));
                 return;
             }
         }
@@ -391,7 +391,7 @@ class WP_Markdown_Editor {
         );
         
         if (is_wp_error($term_result)) {
-            wp_send_json_error(__('分类创建失败: ', 'wp-markdown-editor') . $term_result->get_error_message());
+            wp_send_json_error(__('分类创建失败: ', 'advanced-markdown-editor') . $term_result->get_error_message());
             return;
         }
         
@@ -404,7 +404,7 @@ class WP_Markdown_Editor {
             'slug' => $term->slug,
             'parent' => $term->parent,
             'description' => $term->description,
-            'message' => __('分类创建成功', 'wp-markdown-editor')
+            'message' => __('分类创建成功', 'advanced-markdown-editor')
         ));
     }
     
@@ -414,18 +414,18 @@ class WP_Markdown_Editor {
     public function upload_image_for_markdown() {
         // 验证nonce
         if (!wp_verify_nonce($_POST['nonce'], 'wp_markdown_editor_nonce')) {
-            wp_die(__('安全验证失败', 'wp-markdown-editor'));
+            wp_die(__('安全验证失败', 'advanced-markdown-editor'));
         }
         
         // 检查权限
         if (!current_user_can('upload_files')) {
-            wp_send_json_error(__('您没有权限上传文件', 'wp-markdown-editor'));
+            wp_send_json_error(__('您没有权限上传文件', 'advanced-markdown-editor'));
             return;
         }
         
         // 检查是否有文件上传
         if (empty($_FILES['file'])) {
-            wp_send_json_error(__('没有选择文件', 'wp-markdown-editor'));
+            wp_send_json_error(__('没有选择文件', 'advanced-markdown-editor'));
             return;
         }
         
@@ -434,14 +434,14 @@ class WP_Markdown_Editor {
         // 检查文件类型
         $allowed_types = array('image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp');
         if (!in_array($file['type'], $allowed_types)) {
-            wp_send_json_error(__('不支持的文件类型', 'wp-markdown-editor'));
+            wp_send_json_error(__('不支持的文件类型', 'advanced-markdown-editor'));
             return;
         }
         
         // 检查文件大小 (默认最大5MB)
         $max_size = 5 * 1024 * 1024; // 5MB
         if ($file['size'] > $max_size) {
-            wp_send_json_error(__('文件大小超过限制', 'wp-markdown-editor'));
+            wp_send_json_error(__('文件大小超过限制', 'advanced-markdown-editor'));
             return;
         }
         
@@ -482,7 +482,7 @@ class WP_Markdown_Editor {
         $attachment_id = wp_insert_attachment($attachment, $file_path);
         
         if (is_wp_error($attachment_id)) {
-            wp_send_json_error(__('附件创建失败', 'wp-markdown-editor'));
+            wp_send_json_error(__('附件创建失败', 'advanced-markdown-editor'));
             return;
         }
         
@@ -501,7 +501,7 @@ class WP_Markdown_Editor {
             'filename' => basename($file_path),
             'alt' => get_post_meta($attachment_id, '_wp_attachment_image_alt', true),
             'title' => get_the_title($attachment_id),
-            'message' => __('图片上传成功', 'wp-markdown-editor')
+            'message' => __('图片上传成功', 'advanced-markdown-editor')
         ));
     }
     
@@ -521,7 +521,7 @@ class WP_Markdown_Editor {
     public function add_meta_boxes() {
         add_meta_box(
             'markdown-editor-meta',
-            __('Markdown 编辑器', 'wp-markdown-editor'),
+            __('Markdown 编辑器', 'advanced-markdown-editor'),
             array($this, 'markdown_meta_box_callback'),
             array('post', 'page'),
             'side',
@@ -538,9 +538,9 @@ class WP_Markdown_Editor {
         
         echo '<p>';
         if ($is_markdown) {
-            echo '<strong>' . __('此文章使用Markdown编辑器创建', 'wp-markdown-editor') . '</strong><br>';
+            echo '<strong>' . __('此文章使用Markdown编辑器创建', 'advanced-markdown-editor') . '</strong><br>';
         }
-        echo '<a href="' . esc_url($edit_link) . '" class="button">' . __('用Markdown编辑器编辑', 'wp-markdown-editor') . '</a>';
+        echo '<a href="' . esc_url($edit_link) . '" class="button">' . __('用Markdown编辑器编辑', 'advanced-markdown-editor') . '</a>';
         echo '</p>';
     }
     
@@ -557,7 +557,7 @@ class WP_Markdown_Editor {
     public function add_markdown_edit_link($actions, $post) {
         if (current_user_can('edit_post', $post->ID)) {
             $markdown_edit_link = admin_url('admin.php?page=wp-markdown-editor&post=' . $post->ID);
-            $actions['markdown_edit'] = '<a href="' . esc_url($markdown_edit_link) . '">' . __('Markdown编辑', 'wp-markdown-editor') . '</a>';
+            $actions['markdown_edit'] = '<a href="' . esc_url($markdown_edit_link) . '">' . __('Markdown编辑', 'advanced-markdown-editor') . '</a>';
         }
         return $actions;
     }

@@ -11,6 +11,16 @@
 - [x] 更新CSS和JS文件头部注释
 - [x] 更新示例文件
 
+## 自动检查问题修复 ✅
+
+### 已修复的问题：
+- [x] **隐藏文件错误** - 从发布包中排除 `.gitignore` 文件
+- [x] **版本过期错误** - 更新 `readme.txt` 中 "Tested up to" 从 6.4 到 6.8
+- [x] **文本域不匹配警告** - 更新文本域从 `wp-markdown-editor` 到 `advanced-markdown-editor`
+- [x] 重命名所有语言文件以匹配新文本域
+- [x] 更新主插件文件中的所有文本域引用
+- [x] 创建新的干净发布包
+
 ## WordPress.org 提交要求检查
 
 ### 基本要求 ✅
@@ -71,8 +81,11 @@
 
 1. **准备插件包**
    ```bash
-   # 创建发布版本
-   git archive --format=zip --prefix=advanced-markdown-editor/ HEAD > advanced-markdown-editor.zip
+   # 方法一：使用git archive排除不需要的文件
+   git archive --format=zip --prefix=advanced-markdown-editor/ HEAD -- . ':!.gitignore' ':!WORDPRESS_SUBMISSION_CHECKLIST.md' ':!CONTRIBUTING.md' ':!test-translations.php' ':!example.md' > advanced-markdown-editor.zip
+   
+   # 方法二：使用zip命令（推荐）
+   zip -r advanced-markdown-editor.zip . -x "*.git*" "*/.DS_Store" "*.gitignore" "WORDPRESS_SUBMISSION_CHECKLIST.md" "CONTRIBUTING.md" "test-translations.php" "example.md"
    ```
 
 2. **WordPress.org 账户**
@@ -92,7 +105,7 @@
 - **作者**: xiaocaicai
 - **许可证**: GPL v2 or later
 - **最低WordPress版本**: 5.0
-- **测试版本**: 6.4
+- **测试版本**: 6.8
 
 ## 注意事项
 
