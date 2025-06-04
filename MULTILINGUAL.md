@@ -1,6 +1,6 @@
-# WordPress Markdown Editor - 多语言支持
+# Advanced Markdown Editor - 多语言支持
 
-WordPress Markdown编辑器现在支持多种语言，为全球用户提供本地化体验。
+Advanced Markdown Editor现在支持多种语言，为全球用户提供本地化体验。
 
 ## 支持的语言
 
@@ -151,7 +151,7 @@ _x('文本', '上下文', 'wp-markdown-editor')
 
 ## 贡献翻译
 
-欢迎为WordPress Markdown Editor贡献翻译！
+欢迎为Advanced Markdown Editor贡献翻译！
 
 1. Fork项目仓库
 2. 添加或改进语言文件
@@ -177,4 +177,4 @@ _x('文本', '上下文', 'wp-markdown-editor')
 
 ---
 
-*WordPress Markdown Editor致力于为全球用户提供最佳的多语言体验。* 
+*Advanced Markdown Editor致力于为全球用户提供最佳的多语言体验。* 

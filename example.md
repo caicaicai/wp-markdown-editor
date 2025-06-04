@@ -1,4 +1,4 @@
-# WordPress Markdown 编辑器示例
+# Advanced Markdown Editor 示例
 
 这是一个Markdown编辑器的示例文档，展示了各种Markdown语法的使用方法。
 

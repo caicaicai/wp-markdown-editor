@@ -1,5 +1,5 @@
 /**
- * WordPress Markdown Editor - Admin JavaScript
+ * Advanced Markdown Editor - Admin JavaScript
  */
 
 (function($) {

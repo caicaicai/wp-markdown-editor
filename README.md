@@ -1,4 +1,4 @@
-# WordPress Markdown 编辑器插件
+# Advanced Markdown Editor
 
 一个强大而易用的WordPress Markdown编辑器插件，为您提供专业的Markdown编辑体验，同时保持与WordPress原生编辑器的完美兼容性。
 
@@ -231,7 +231,7 @@ A: Markdown源码存储在WordPress数据库的post meta中，跟随文章一起
 - 🎉 首次发布
 - ✨ 基本Markdown编辑功能
 - 🎨 现代化编辑界面
-- �� 自动保存功能
+- 💾 自动保存功能
 - 📱 响应式设计
 - 🌍 多语言支持（中文、英语、法语、德语、俄语、日语）
 - 🏷️ 分类标签管理系统

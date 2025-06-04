@@ -1,6 +1,6 @@
 <?php
 /**
- * WordPress Markdown Editor - 翻译测试脚本
+ * Advanced Markdown Editor - 翻译测试脚本
  * 
  * 这个脚本可以帮助您测试插件的多语言功能
  * 使用方法：php test-translations.php
@@ -11,7 +11,7 @@ if (php_sapi_name() !== 'cli') {
     die('此脚本只能在命令行中运行');
 }
 
-echo "WordPress Markdown Editor - 翻译测试\n";
+echo "Advanced Markdown Editor - 翻译测试\n";
 echo "=====================================\n\n";
 
 // 测试的语言列表
