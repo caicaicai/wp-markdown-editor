@@ -161,7 +161,7 @@ class WP_Markdown_Editor {
             
             // 加载样式
             wp_enqueue_style(
-                'wp-markdown-editor-admin',
+                'advanced-markdown-editor-admin',
                 WP_MARKDOWN_EDITOR_PLUGIN_URL . 'assets/css/admin.css',
                 array(),
                 WP_MARKDOWN_EDITOR_VERSION
@@ -169,7 +169,7 @@ class WP_Markdown_Editor {
             
             // 加载脚本
             wp_enqueue_script(
-                'wp-markdown-editor-admin',
+                'advanced-markdown-editor-admin',
                 WP_MARKDOWN_EDITOR_PLUGIN_URL . 'assets/js/admin.js',
                 array('jquery', 'media-upload', 'media-views'),
                 WP_MARKDOWN_EDITOR_VERSION,
@@ -186,7 +186,7 @@ class WP_Markdown_Editor {
             );
             
             // 传递AJAX URL和nonce
-            wp_localize_script('wp-markdown-editor-admin', 'wpMarkdownEditor', array(
+            wp_localize_script('advanced-markdown-editor-admin', 'wpMarkdownEditor', array(
                 'ajaxUrl' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('wp_markdown_editor_nonce'),
                 'strings' => array(

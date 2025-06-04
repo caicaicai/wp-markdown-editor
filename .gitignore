@@ -6,8 +6,6 @@
 /wp-includes/
 /wp-content/
 wp-*.php
-# 但允许我们的主插件文件
-!wp-markdown-editor.php
 xmlrpc.php
 .htaccess
 
@@ -146,3 +144,13 @@ $RECYCLE.BIN/
 
 # 本项目特定
 # 如果你有特定的开发工具或临时文件，可以在这里添加 
+
+# WordPress 插件忽略文件
+
+# 排除所有文件
+*
+
+# 但包含这些重要文件
+!advanced-markdown-editor.php
+!readme.txt
+!README.md 

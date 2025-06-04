@@ -19,7 +19,21 @@
 - [x] **文本域不匹配警告** - 更新文本域从 `wp-markdown-editor` 到 `advanced-markdown-editor`
 - [x] 重命名所有语言文件以匹配新文本域
 - [x] 更新主插件文件中的所有文本域引用
+- [x] 更新模板文件中的所有文本域引用
+- [x] 更新脚本和样式句柄名称
 - [x] 创建新的干净发布包
+
+### 文本域修复详情：
+- ✅ 主插件文件 (`advanced-markdown-editor.php`) - 所有 `__()` 函数调用已更新
+- ✅ 模板文件 (`templates/editor.php`) - 所有 `_e()` 和 `__()` 函数调用已更新
+- ✅ 语言文件重命名 - 从 `wp-markdown-editor-*` 到 `advanced-markdown-editor-*`
+- ✅ 脚本句柄名称 - 从 `wp-markdown-editor-admin` 到 `advanced-markdown-editor-admin`
+- ✅ 主插件文件重命名 - 从 `wp-markdown-editor.php` 到 `advanced-markdown-editor.php`
+
+### 保留的wp-markdown-editor引用（正常）：
+- WordPress菜单页面slug (`wp-markdown-editor`, `wp-markdown-editor-new`)
+- 管理页面URL参数 (`admin.php?page=wp-markdown-editor`)
+- 这些是WordPress系统标识符，不影响文本域验证
 
 ## WordPress.org 提交要求检查
 
@@ -30,7 +44,7 @@
 - [x] 代码遵循WordPress编码标准
 
 ### 文件结构 ✅
-- [x] 主插件文件：`wp-markdown-editor.php`
+- [x] 主插件文件：`advanced-markdown-editor.php`
 - [x] 说明文档：`README.md`
 - [x] 多语言支持：`languages/` 目录
 - [x] 资源文件：`assets/` 目录

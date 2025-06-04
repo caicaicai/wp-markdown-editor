@@ -16,17 +16,17 @@ Advanced Markdown Editor现在支持多种语言，为全球用户提供本地�
 
 ```
 languages/
-├── wp-markdown-editor.pot          # 翻译模板文件
-├── wp-markdown-editor-en_US.po     # 英语翻译源文件
-├── wp-markdown-editor-en_US.mo     # 英语翻译编译文件
-├── wp-markdown-editor-fr_FR.po     # 法语翻译源文件
-├── wp-markdown-editor-fr_FR.mo     # 法语翻译编译文件
-├── wp-markdown-editor-de_DE.po     # 德语翻译源文件
-├── wp-markdown-editor-de_DE.mo     # 德语翻译编译文件
-├── wp-markdown-editor-ru_RU.po     # 俄语翻译源文件
-├── wp-markdown-editor-ru_RU.mo     # 俄语翻译编译文件
-├── wp-markdown-editor-ja.po        # 日语翻译源文件
-└── wp-markdown-editor-ja.mo        # 日语翻译编译文件
+├── advanced-markdown-editor.pot          # 翻译模板文件
+├── advanced-markdown-editor-en_US.po     # 英语翻译源文件
+├── advanced-markdown-editor-en_US.mo     # 英语翻译编译文件
+├── advanced-markdown-editor-fr_FR.po     # 法语翻译源文件
+├── advanced-markdown-editor-fr_FR.mo     # 法语翻译编译文件
+├── advanced-markdown-editor-de_DE.po     # 德语翻译源文件
+├── advanced-markdown-editor-de_DE.mo     # 德语翻译编译文件
+├── advanced-markdown-editor-ru_RU.po     # 俄语翻译源文件
+├── advanced-markdown-editor-ru_RU.mo     # 俄语翻译编译文件
+├── advanced-markdown-editor-ja.po        # 日语翻译源文件
+└── advanced-markdown-editor-ja.mo        # 日语翻译编译文件
 ```
 
 ## 如何切换语言
@@ -94,7 +94,7 @@ define('WPLANG', '');
 
 1. **创建PO文件**：
    ```bash
-   cp languages/wp-markdown-editor.pot languages/wp-markdown-editor-xx_XX.po
+   cp languages/advanced-markdown-editor.pot languages/advanced-markdown-editor-xx_XX.po
    ```
 
 2. **翻译字符串**：
@@ -102,24 +102,24 @@ define('WPLANG', '');
 
 3. **生成MO文件**：
    ```bash
-   msgfmt languages/wp-markdown-editor-xx_XX.po -o languages/wp-markdown-editor-xx_XX.mo
+   msgfmt languages/advanced-markdown-editor-xx_XX.po -o languages/advanced-markdown-editor-xx_XX.mo
    ```
 
 ### 更新现有翻译
 
 1. **更新POT模板**：
    ```bash
-   wp i18n make-pot . languages/wp-markdown-editor.pot
+   wp i18n make-pot . languages/advanced-markdown-editor.pot
    ```
 
 2. **合并到现有PO文件**：
    ```bash
-   msgmerge --update languages/wp-markdown-editor-xx_XX.po languages/wp-markdown-editor.pot
+   msgmerge --update languages/advanced-markdown-editor-xx_XX.po languages/advanced-markdown-editor.pot
    ```
 
 3. **重新生成MO文件**：
    ```bash
-   msgfmt languages/wp-markdown-editor-xx_XX.po -o languages/wp-markdown-editor-xx_XX.mo
+   msgfmt languages/advanced-markdown-editor-xx_XX.po -o languages/advanced-markdown-editor-xx_XX.mo
    ```
 
 ### 在代码中使用翻译
@@ -128,16 +128,16 @@ define('WPLANG', '');
 
 ```php
 // 基本翻译
-__('文本', 'wp-markdown-editor')
+__('文本', 'advanced-markdown-editor')
 
 // 输出翻译
-_e('文本', 'wp-markdown-editor')
+_e('文本', 'advanced-markdown-editor')
 
 // 复数形式
-_n('单数', '复数', $number, 'wp-markdown-editor')
+_n('单数', '复数', $number, 'advanced-markdown-editor')
 
 // 带上下文的翻译
-_x('文本', '上下文', 'wp-markdown-editor')
+_x('文本', '上下文', 'advanced-markdown-editor')
 ```
 
 ## 翻译质量说明

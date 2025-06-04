@@ -133,8 +133,8 @@
 ## 📂 文件结构
 
 ```
-wp-markdown-editor/
-├── wp-markdown-editor.php    # 主插件文件
+advanced-markdown-editor/
+├── advanced-markdown-editor.php    # 主插件文件
 ├── templates/
 │   └── editor.php            # 编辑器模板
 ├── assets/
@@ -143,17 +143,17 @@ wp-markdown-editor/
 │   └── js/
 │       └── admin.js          # 管理脚本
 ├── languages/                # 多语言文件
-│   ├── wp-markdown-editor.pot       # 翻译模板
-│   ├── wp-markdown-editor-en_US.po  # 英语翻译
-│   ├── wp-markdown-editor-en_US.mo  # 英语编译文件
-│   ├── wp-markdown-editor-fr_FR.po  # 法语翻译
-│   ├── wp-markdown-editor-fr_FR.mo  # 法语编译文件
-│   ├── wp-markdown-editor-de_DE.po  # 德语翻译
-│   ├── wp-markdown-editor-de_DE.mo  # 德语编译文件
-│   ├── wp-markdown-editor-ru_RU.po  # 俄语翻译
-│   ├── wp-markdown-editor-ru_RU.mo  # 俄语编译文件
-│   ├── wp-markdown-editor-ja.po     # 日语翻译
-│   └── wp-markdown-editor-ja.mo     # 日语编译文件
+│   ├── advanced-markdown-editor.pot       # 翻译模板
+│   ├── advanced-markdown-editor-en_US.po  # 英语翻译
+│   ├── advanced-markdown-editor-en_US.mo  # 英语编译文件
+│   ├── advanced-markdown-editor-fr_FR.po  # 法语翻译
+│   ├── advanced-markdown-editor-fr_FR.mo  # 法语编译文件
+│   ├── advanced-markdown-editor-de_DE.po  # 德语翻译
+│   ├── advanced-markdown-editor-de_DE.mo  # 德语编译文件
+│   ├── advanced-markdown-editor-ru_RU.po  # 俄语翻译
+│   ├── advanced-markdown-editor-ru_RU.mo  # 俄语编译文件
+│   ├── advanced-markdown-editor-ja.po     # 日语翻译
+│   └── advanced-markdown-editor-ja.mo     # 日语编译文件
 ├── README.md                 # 说明文档
 └── MULTILINGUAL.md           # 多语言说明文档
 ```

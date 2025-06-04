@@ -40,8 +40,8 @@ foreach ($languages as $locale => $name) {
     echo "检查语言: {$name} ({$locale})\n";
     echo str_repeat('-', 40) . "\n";
     
-    $po_file = "languages/wp-markdown-editor-{$locale}.po";
-    $mo_file = "languages/wp-markdown-editor-{$locale}.mo";
+    $po_file = "languages/advanced-markdown-editor-{$locale}.po";
+    $mo_file = "languages/advanced-markdown-editor-{$locale}.mo";
     
     // 检查PO文件
     if (file_exists($po_file)) {
@@ -77,7 +77,7 @@ foreach ($languages as $locale => $name) {
 echo "检查POT模板文件\n";
 echo str_repeat('-', 40) . "\n";
 
-$pot_file = 'languages/wp-markdown-editor.pot';
+$pot_file = 'languages/advanced-markdown-editor.pot';
 if (file_exists($pot_file)) {
     echo "✓ POT模板文件存在: {$pot_file}\n";
     
@@ -101,8 +101,8 @@ echo "核心字符串数量: " . count($test_strings) . "\n";
 // 检查是否所有文件都存在
 $missing_files = 0;
 foreach ($languages as $locale => $name) {
-    if (!file_exists("languages/wp-markdown-editor-{$locale}.po")) $missing_files++;
-    if (!file_exists("languages/wp-markdown-editor-{$locale}.mo")) $missing_files++;
+    if (!file_exists("languages/advanced-markdown-editor-{$locale}.po")) $missing_files++;
+    if (!file_exists("languages/advanced-markdown-editor-{$locale}.mo")) $missing_files++;
 }
 
 if ($missing_files === 0) {
