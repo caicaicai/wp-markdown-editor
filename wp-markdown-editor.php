@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name: WordPress Markdown 编辑器
- * Plugin URI: https://github.com/your-username/wp-markdown-editor
+ * Plugin URI: https://github.com/caicaicai/wp-markdown-editor
  * Description: 为WordPress添加独立的Markdown编辑器，支持文章的Markdown编辑和发布，同时保持与原有编辑器的兼容性。
  * Version: 1.0.0
- * Author: Your Name
+ * Author: xiaocaicai
  * License: GPL v2 or later
  * Text Domain: wp-markdown-editor
  * Domain Path: /languages
