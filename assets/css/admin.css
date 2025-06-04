@@ -71,6 +71,129 @@
     gap: 10px;
 }
 
+/* 分类和标签选择区域 */
+.editor-meta {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.meta-section {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.categories-section,
+.tags-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+.categories-section label,
+.tags-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.categories-wrapper {
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 10px;
+    background: #fff;
+    margin-bottom: 10px;
+}
+
+.category-item {
+    display: block;
+    padding: 4px 0;
+    font-weight: normal;
+    cursor: pointer;
+    margin-bottom: 4px;
+}
+
+.category-item:last-child {
+    margin-bottom: 0;
+}
+
+.category-item input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.category-item:hover {
+    background: #f0f0f0;
+    border-radius: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.no-items {
+    color: #999;
+    font-style: italic;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+.tags-input-wrapper {
+    position: relative;
+}
+
+#post-tags {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+#post-tags:focus {
+    border-color: #007cba;
+    box-shadow: 0 0 0 1px #007cba;
+    outline: none;
+}
+
+.tags-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 3px 3px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tag-suggestion {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.tag-suggestion:last-child {
+    border-bottom: none;
+}
+
+.tag-suggestion:hover,
+.tag-suggestion.active {
+    background: #f0f0f0;
+}
+
+.description {
+    font-size: 12px;
+    color: #666;
+    margin: 5px 0 0 0;
+    font-style: italic;
+}
+
 /* 标签页 */
 .editor-tabs {
     display: flex;
@@ -428,6 +551,45 @@
     width: 40%;
 }
 
+/* 新建分类表单样式 */
+.form-table {
+    width: 100%;
+}
+
+.form-table th {
+    text-align: left;
+    font-weight: 600;
+    padding: 10px 0;
+    width: 120px;
+    vertical-align: top;
+}
+
+.form-table td {
+    padding: 10px 0;
+}
+
+.form-table .regular-text {
+    width: 100%;
+    max-width: 300px;
+}
+
+.form-table .large-text {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-table .description {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #666;
+}
+
+.submit {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #e1e1e1;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
     .editor-header {
@@ -437,6 +599,16 @@
     
     .editor-actions {
         justify-content: space-between;
+    }
+    
+    .meta-section {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .categories-section,
+    .tags-section {
+        min-width: auto;
     }
     
     .editor-content {
@@ -466,6 +638,18 @@
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
+    }
+    
+    .form-table th,
+    .form-table td {
+        display: block;
+        width: 100%;
+        padding: 5px 0;
+    }
+    
+    .form-table th {
+        font-weight: 600;
+        margin-bottom: 5px;
     }
 }
 
@@ -497,22 +681,30 @@
 
 /* 自定义滚动条 */
 #markdown-editor::-webkit-scrollbar,
-.preview-content::-webkit-scrollbar {
+.preview-content::-webkit-scrollbar,
+.categories-wrapper::-webkit-scrollbar,
+.tags-suggestions::-webkit-scrollbar {
     width: 8px;
 }
 
 #markdown-editor::-webkit-scrollbar-track,
-.preview-content::-webkit-scrollbar-track {
+.preview-content::-webkit-scrollbar-track,
+.categories-wrapper::-webkit-scrollbar-track,
+.tags-suggestions::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 
 #markdown-editor::-webkit-scrollbar-thumb,
-.preview-content::-webkit-scrollbar-thumb {
+.preview-content::-webkit-scrollbar-thumb,
+.categories-wrapper::-webkit-scrollbar-thumb,
+.tags-suggestions::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 4px;
 }
 
 #markdown-editor::-webkit-scrollbar-thumb:hover,
-.preview-content::-webkit-scrollbar-thumb:hover {
+.preview-content::-webkit-scrollbar-thumb:hover,
+.categories-wrapper::-webkit-scrollbar-thumb:hover,
+.tags-suggestions::-webkit-scrollbar-thumb:hover {
     background: #a1a1a1;
 } 

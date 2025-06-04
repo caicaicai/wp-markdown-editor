@@ -13,6 +13,8 @@ $is_new_post = !$post_id;
 $post_title = '';
 $markdown_content = '';
 $post_status = 'draft';
+$post_categories = array();
+$post_tags = array();
 
 if (!$is_new_post) {
     $post = get_post($post_id);
@@ -23,7 +25,25 @@ if (!$is_new_post) {
         $markdown_content = $post->post_content;
     }
     $post_status = $post->post_status;
+    
+    // 获取文章的分类和标签
+    $post_categories = wp_get_post_categories($post_id);
+    $post_tags = wp_get_post_tags($post_id, array('fields' => 'ids'));
 }
+
+// 获取所有可用的分类
+$categories = get_categories(array(
+    'hide_empty' => false,
+    'orderby' => 'name',
+    'order' => 'ASC'
+));
+
+// 获取所有可用的标签
+$tags = get_tags(array(
+    'hide_empty' => false,
+    'orderby' => 'name',
+    'order' => 'ASC'
+));
 ?>
 
 <div class="wrap">
@@ -71,6 +91,57 @@ if (!$is_new_post) {
                     <button type="button" id="publish-post" class="button button-primary">
                         <?php _e('发布', 'wp-markdown-editor'); ?>
                     </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 分类和标签选择区域 -->
+        <div class="editor-meta">
+            <div class="meta-section">
+                <div class="categories-section">
+                    <label><?php _e('分类:', 'wp-markdown-editor'); ?></label>
+                    <div class="categories-wrapper">
+                        <?php if (!empty($categories)): ?>
+                            <?php foreach ($categories as $category): ?>
+                                <label class="category-item">
+                                    <input type="checkbox" 
+                                           name="post_categories[]" 
+                                           value="<?php echo $category->term_id; ?>"
+                                           <?php checked(in_array($category->term_id, $post_categories)); ?>>
+                                    <?php echo esc_html($category->name); ?>
+                                </label>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p class="no-items"><?php _e('暂无分类', 'wp-markdown-editor'); ?></p>
+                        <?php endif; ?>
+                    </div>
+                    <button type="button" class="button button-small" id="add-new-category">
+                        <?php _e('新建分类', 'wp-markdown-editor'); ?>
+                    </button>
+                </div>
+                
+                <div class="tags-section">
+                    <label for="post-tags"><?php _e('标签:', 'wp-markdown-editor'); ?></label>
+                    <div class="tags-input-wrapper">
+                        <input type="text" 
+                               id="post-tags" 
+                               name="post_tags" 
+                               placeholder="<?php _e('输入标签，用逗号分隔', 'wp-markdown-editor'); ?>"
+                               value="<?php 
+                                   if (!empty($post_tags)) {
+                                       $tag_names = array();
+                                       foreach ($post_tags as $tag_id) {
+                                           $tag = get_tag($tag_id);
+                                           if ($tag) {
+                                               $tag_names[] = $tag->name;
+                                           }
+                                       }
+                                       echo esc_attr(implode(', ', $tag_names));
+                                   }
+                               ?>">
+                        <div class="tags-suggestions" id="tags-suggestions" style="display: none;"></div>
+                    </div>
+                    <p class="description"><?php _e('多个标签用逗号分隔，支持自动提示', 'wp-markdown-editor'); ?></p>
                 </div>
             </div>
         </div>
@@ -143,6 +214,73 @@ if (!$is_new_post) {
     <!-- 隐藏字段 -->
     <input type="hidden" id="post-id" value="<?php echo $post_id; ?>">
     <input type="hidden" id="editor-nonce" value="<?php echo wp_create_nonce('wp_markdown_editor_nonce'); ?>">
+    
+    <!-- 传递标签数据给JavaScript -->
+    <script type="text/javascript">
+        var availableTags = <?php echo json_encode(array_map(function($tag) {
+            return $tag->name;
+        }, $tags)); ?>;
+    </script>
+</div>
+
+<!-- 新建分类模态框 -->
+<div id="new-category-modal" class="markdown-modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><?php _e('新建分类', 'wp-markdown-editor'); ?></h3>
+            <button type="button" class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="new-category-form">
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">
+                            <label for="new-category-name"><?php _e('分类名称', 'wp-markdown-editor'); ?></label>
+                        </th>
+                        <td>
+                            <input type="text" id="new-category-name" name="category_name" class="regular-text" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="new-category-slug"><?php _e('别名', 'wp-markdown-editor'); ?></label>
+                        </th>
+                        <td>
+                            <input type="text" id="new-category-slug" name="category_slug" class="regular-text">
+                            <p class="description"><?php _e('别名是在URL中使用的版本，通常为小写，只包含字母、数字和连字符。', 'wp-markdown-editor'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="new-category-parent"><?php _e('父级分类', 'wp-markdown-editor'); ?></label>
+                        </th>
+                        <td>
+                            <select id="new-category-parent" name="category_parent">
+                                <option value="0"><?php _e('无（顶级分类）', 'wp-markdown-editor'); ?></option>
+                                <?php foreach ($categories as $category): ?>
+                                    <option value="<?php echo $category->term_id; ?>">
+                                        <?php echo esc_html($category->name); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="new-category-description"><?php _e('描述', 'wp-markdown-editor'); ?></label>
+                        </th>
+                        <td>
+                            <textarea id="new-category-description" name="category_description" rows="3" class="large-text"></textarea>
+                        </td>
+                    </tr>
+                </table>
+                <p class="submit">
+                    <button type="submit" class="button button-primary"><?php _e('添加分类', 'wp-markdown-editor'); ?></button>
+                    <button type="button" class="button modal-close"><?php _e('取消', 'wp-markdown-editor'); ?></button>
+                </p>
+            </form>
+        </div>
+    </div>
 </div>
 
 <!-- 帮助模态框 -->

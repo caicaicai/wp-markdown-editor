@@ -14,6 +14,7 @@
             this.setupEditor();
             this.loadPost();
             this.setupAutoSave();
+            this.setupTagsAutocomplete();
         },
 
         // 绑定事件
@@ -49,6 +50,17 @@
                 self.markAsChanged();
             });
 
+            // 分类选择事件
+            $('input[name="post_categories[]"]').on('change', function() {
+                self.markAsChanged();
+            });
+
+            // 标签输入事件
+            $('#post-tags').on('input', function() {
+                self.markAsChanged();
+                self.showTagSuggestions($(this).val());
+            });
+
             // 保存按钮
             $('#save-draft').on('click', function() {
                 self.savePost('draft');
@@ -56,6 +68,18 @@
 
             $('#publish-post').on('click', function() {
                 self.savePost('publish');
+            });
+
+            // 新建分类按钮
+            $('#add-new-category').on('click', function() {
+                $('#new-category-modal').show();
+                $('#new-category-name').focus();
+            });
+
+            // 新建分类表单提交
+            $('#new-category-form').on('submit', function(e) {
+                e.preventDefault();
+                self.createNewCategory();
             });
 
             // 键盘快捷键
@@ -76,6 +100,11 @@
                             break;
                     }
                 }
+
+                // ESC键关闭模态框
+                if (e.which === 27) {
+                    $('.markdown-modal').hide();
+                }
             });
 
             // 窗口关闭前确认
@@ -95,6 +124,56 @@
                 if (e.target === this) {
                     $(this).hide();
                 }
+            });
+
+            // 标签建议选择
+            $(document).on('click', '.tag-suggestion', function() {
+                self.selectTagSuggestion($(this).text());
+            });
+
+            // 标签输入框键盘导航
+            $('#post-tags').on('keydown', function(e) {
+                const $suggestions = $('#tags-suggestions');
+                const $active = $suggestions.find('.tag-suggestion.active');
+                
+                if ($suggestions.is(':visible')) {
+                    switch(e.which) {
+                        case 38: // 上箭头
+                            e.preventDefault();
+                            if ($active.length && $active.prev().length) {
+                                $active.removeClass('active').prev().addClass('active');
+                            } else {
+                                $suggestions.find('.tag-suggestion').removeClass('active').last().addClass('active');
+                            }
+                            break;
+                        case 40: // 下箭头
+                            e.preventDefault();
+                            if ($active.length && $active.next().length) {
+                                $active.removeClass('active').next().addClass('active');
+                            } else {
+                                $suggestions.find('.tag-suggestion').removeClass('active').first().addClass('active');
+                            }
+                            break;
+                        case 13: // 回车
+                            e.preventDefault();
+                            if ($active.length) {
+                                self.selectTagSuggestion($active.text());
+                            }
+                            break;
+                        case 27: // ESC
+                            $suggestions.hide();
+                            break;
+                    }
+                }
+            });
+
+            // 自动生成分类别名
+            $('#new-category-name').on('input', function() {
+                const name = $(this).val();
+                const slug = name.toLowerCase()
+                    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+                $('#new-category-slug').val(slug);
             });
         },
 
@@ -142,16 +221,139 @@
             });
         },
 
+        // 设置标签自动完成
+        setupTagsAutocomplete: function() {
+            // 隐藏标签建议框当点击其他地方时
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.tags-input-wrapper').length) {
+                    $('#tags-suggestions').hide();
+                }
+            });
+        },
+
+        // 显示标签建议
+        showTagSuggestions: function(input) {
+            const $suggestions = $('#tags-suggestions');
+            
+            if (!input || input.length < 1) {
+                $suggestions.hide();
+                return;
+            }
+
+            // 获取当前输入的最后一个标签
+            const tags = input.split(',');
+            const currentTag = tags[tags.length - 1].trim().toLowerCase();
+            
+            if (currentTag.length < 1) {
+                $suggestions.hide();
+                return;
+            }
+
+            // 过滤可用标签
+            const matches = window.availableTags.filter(function(tag) {
+                return tag.toLowerCase().indexOf(currentTag) === 0 && 
+                       tags.indexOf(tag) === -1; // 排除已选择的标签
+            });
+
+            if (matches.length === 0) {
+                $suggestions.hide();
+                return;
+            }
+
+            // 构建建议列表
+            let html = '';
+            matches.slice(0, 10).forEach(function(tag) { // 最多显示10个建议
+                html += '<div class="tag-suggestion">' + tag + '</div>';
+            });
+
+            $suggestions.html(html).show();
+        },
+
+        // 选择标签建议
+        selectTagSuggestion: function(selectedTag) {
+            const $tagsInput = $('#post-tags');
+            const currentValue = $tagsInput.val();
+            const tags = currentValue.split(',');
+            
+            // 替换最后一个标签
+            tags[tags.length - 1] = selectedTag;
+            
+            $tagsInput.val(tags.join(', ') + ', ').focus();
+            $('#tags-suggestions').hide();
+            this.markAsChanged();
+        },
+
+        // 创建新分类
+        createNewCategory: function() {
+            const $form = $('#new-category-form');
+            const $submitBtn = $form.find('button[type="submit"]');
+            const originalText = $submitBtn.text();
+            
+            $submitBtn.text('创建中...').prop('disabled', true);
+
+            const formData = {
+                action: 'create_new_category',
+                category_name: $('#new-category-name').val(),
+                category_slug: $('#new-category-slug').val(),
+                category_parent: $('#new-category-parent').val(),
+                category_description: $('#new-category-description').val(),
+                nonce: wpMarkdownEditor.nonce
+            };
+
+            const self = this;
+            $.ajax({
+                url: wpMarkdownEditor.ajaxUrl,
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    if (response.success) {
+                        // 添加新分类到列表
+                        const newCategory = response.data;
+                        const $categoriesWrapper = $('.categories-wrapper');
+                        
+                        if ($categoriesWrapper.find('.no-items').length) {
+                            $categoriesWrapper.html('');
+                        }
+                        
+                        const categoryHtml = '<label class="category-item">' +
+                            '<input type="checkbox" name="post_categories[]" value="' + newCategory.term_id + '" checked>' +
+                            newCategory.name +
+                            '</label>';
+                        
+                        $categoriesWrapper.append(categoryHtml);
+                        
+                        // 关闭模态框并重置表单
+                        $('#new-category-modal').hide();
+                        $form[0].reset();
+                        
+                        // 标记为已更改
+                        self.markAsChanged();
+                        
+                        alert('分类创建成功！');
+                    } else {
+                        alert('分类创建失败：' + (response.data || '未知错误'));
+                    }
+                },
+                error: function() {
+                    alert('分类创建失败：网络错误');
+                },
+                complete: function() {
+                    $submitBtn.text(originalText).prop('disabled', false);
+                }
+            });
+        },
+
         // 调整编辑器尺寸
         resizeEditor: function() {
             const windowHeight = $(window).height();
             const headerHeight = $('.editor-header').outerHeight();
+            const metaHeight = $('.editor-meta').outerHeight();
             const tabsHeight = $('.editor-tabs').outerHeight();
             const toolbarHeight = $('.toolbar').outerHeight();
             const footerHeight = $('.editor-footer').outerHeight();
             const adminBarHeight = $('#wpadminbar').outerHeight() || 0;
             
-            const availableHeight = windowHeight - headerHeight - tabsHeight - 
+            const availableHeight = windowHeight - headerHeight - metaHeight - tabsHeight - 
                                   toolbarHeight - footerHeight - adminBarHeight - 100;
             
             $('#markdown-editor, .preview-content').css('min-height', Math.max(400, availableHeight) + 'px');
@@ -326,6 +528,20 @@
             const markdownContent = $('#markdown-editor').val();
             const postStatus = status || $('#post-status').val();
             
+            // 获取选中的分类
+            const categories = [];
+            $('input[name="post_categories[]"]:checked').each(function() {
+                categories.push(parseInt($(this).val()));
+            });
+            
+            // 获取标签
+            const tagsInput = $('#post-tags').val();
+            const tags = tagsInput ? tagsInput.split(',').map(function(tag) {
+                return tag.trim();
+            }).filter(function(tag) {
+                return tag.length > 0;
+            }) : [];
+            
             if (!title.trim()) {
                 alert('请输入文章标题');
                 $('#post-title').focus();
@@ -355,6 +571,8 @@
                     markdown_content: markdownContent,
                     html_content: htmlContent,
                     status: postStatus,
+                    categories: categories,
+                    tags: tags,
                     nonce: wpMarkdownEditor.nonce
                 },
                 success: function(response) {
@@ -438,6 +656,11 @@
                     return code;
                 }
             });
+        }
+        
+        // 初始化可用标签数组（如果不存在）
+        if (typeof window.availableTags === 'undefined') {
+            window.availableTags = [];
         }
         
         MarkdownEditor.init();

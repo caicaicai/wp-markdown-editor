@@ -63,6 +63,7 @@ class WP_Markdown_Editor {
         // AJAX钩子
         add_action('wp_ajax_save_markdown_post', array($this, 'save_markdown_post'));
         add_action('wp_ajax_get_markdown_post', array($this, 'get_markdown_post'));
+        add_action('wp_ajax_create_new_category', array($this, 'create_new_category'));
         
         // 添加自定义post meta
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
@@ -230,6 +231,33 @@ class WP_Markdown_Editor {
         $html_content = wp_kses_post($_POST['html_content']);
         $status = sanitize_text_field($_POST['status']);
         
+        // 处理分类
+        $categories = array();
+        if (isset($_POST['categories']) && is_array($_POST['categories'])) {
+            $categories = array_map('intval', $_POST['categories']);
+            // 过滤掉无效的分类ID
+            $categories = array_filter($categories, function($cat_id) {
+                return term_exists($cat_id, 'category');
+            });
+        }
+        
+        // 如果没有选择分类，使用默认分类
+        if (empty($categories)) {
+            $default_category = get_option('default_category');
+            if ($default_category) {
+                $categories = array(intval($default_category));
+            }
+        }
+        
+        // 处理标签
+        $tags = array();
+        if (isset($_POST['tags']) && is_array($_POST['tags'])) {
+            $tags = array_map('sanitize_text_field', $_POST['tags']);
+            $tags = array_filter($tags, function($tag) {
+                return !empty(trim($tag));
+            });
+        }
+        
         $post_data = array(
             'post_title' => $title,
             'post_content' => $html_content,
@@ -238,6 +266,12 @@ class WP_Markdown_Editor {
         );
         
         if ($post_id) {
+            // 检查编辑权限
+            if (!current_user_can('edit_post', $post_id)) {
+                wp_send_json_error(__('您没有权限编辑此文章', 'wp-markdown-editor'));
+                return;
+            }
+            
             $post_data['ID'] = $post_id;
             $result = wp_update_post($post_data);
         } else {
@@ -248,6 +282,16 @@ class WP_Markdown_Editor {
             // 保存Markdown内容到meta
             update_post_meta($result, '_markdown_content', $markdown_content);
             update_post_meta($result, '_is_markdown_post', true);
+            
+            // 设置文章分类
+            if (!empty($categories)) {
+                wp_set_post_categories($result, $categories);
+            }
+            
+            // 设置文章标签
+            if (!empty($tags)) {
+                wp_set_post_tags($result, $tags);
+            }
             
             wp_send_json_success(array(
                 'post_id' => $result,
@@ -280,6 +324,80 @@ class WP_Markdown_Editor {
             'title' => $post->post_title,
             'markdown_content' => $markdown_content ?: $post->post_content,
             'status' => $post->post_status
+        ));
+    }
+    
+    /**
+     * 创建新分类
+     */
+    public function create_new_category() {
+        // 验证nonce
+        if (!wp_verify_nonce($_POST['nonce'], 'wp_markdown_editor_nonce')) {
+            wp_die(__('安全验证失败', 'wp-markdown-editor'));
+        }
+        
+        // 检查权限
+        if (!current_user_can('manage_categories')) {
+            wp_send_json_error(__('您没有权限创建分类', 'wp-markdown-editor'));
+            return;
+        }
+        
+        $category_name = sanitize_text_field($_POST['category_name']);
+        $category_slug = sanitize_title($_POST['category_slug']);
+        $category_parent = intval($_POST['category_parent']);
+        $category_description = sanitize_textarea_field($_POST['category_description']);
+        
+        // 验证分类名称
+        if (empty($category_name)) {
+            wp_send_json_error(__('分类名称不能为空', 'wp-markdown-editor'));
+            return;
+        }
+        
+        // 检查分类名称是否已存在
+        if (term_exists($category_name, 'category')) {
+            wp_send_json_error(__('分类名称已存在', 'wp-markdown-editor'));
+            return;
+        }
+        
+        // 验证父级分类
+        if ($category_parent > 0) {
+            if (!term_exists($category_parent, 'category')) {
+                wp_send_json_error(__('父级分类不存在', 'wp-markdown-editor'));
+                return;
+            }
+        }
+        
+        // 如果没有提供别名，使用分类名称生成
+        if (empty($category_slug)) {
+            $category_slug = sanitize_title($category_name);
+        }
+        
+        // 创建分类
+        $term_result = wp_insert_term(
+            $category_name,
+            'category',
+            array(
+                'slug' => $category_slug,
+                'parent' => $category_parent,
+                'description' => $category_description
+            )
+        );
+        
+        if (is_wp_error($term_result)) {
+            wp_send_json_error(__('分类创建失败: ', 'wp-markdown-editor') . $term_result->get_error_message());
+            return;
+        }
+        
+        // 获取创建的分类信息
+        $term = get_term($term_result['term_id'], 'category');
+        
+        wp_send_json_success(array(
+            'term_id' => $term->term_id,
+            'name' => $term->name,
+            'slug' => $term->slug,
+            'parent' => $term->parent,
+            'description' => $term->description,
+            'message' => __('分类创建成功', 'wp-markdown-editor')
         ));
     }
     
