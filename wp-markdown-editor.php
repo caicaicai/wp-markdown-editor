@@ -110,6 +110,14 @@ class WP_Markdown_Editor {
      * 添加管理菜单
      */
     public function add_admin_menu() {
+        // 菜单位置选项说明：
+        // 6  - 在"文章"之后（当前设置）
+        // 15 - 在"链接"位置（如果没有链接菜单）
+        // 22 - 在"页面"之后，"评论"之前  
+        // 25 - 在"评论"位置
+        // 58 - 在外观之前
+        // 61 - 在"外观"之后
+        
         // 添加主菜单项
         add_menu_page(
             __('Markdown 编辑器', 'wp-markdown-editor'),
@@ -118,7 +126,7 @@ class WP_Markdown_Editor {
             'wp-markdown-editor',
             array($this, 'markdown_editor_page'),
             'dashicons-edit',
-            25
+            6  // 推荐位置：在"文章"菜单之后，因为这是编辑相关的功能
         );
         
         // 添加子菜单项
