@@ -16,6 +16,115 @@
             this.setupAutoSave();
             this.setupTagsAutocomplete();
             this.setupMediaUpload();
+            this.createNotificationContainer();
+            this.initializeButtonStates();
+        },
+
+        // 初始化按钮状态
+        initializeButtonStates: function() {
+            // 检查当前页面的文章状态
+            const postId = $('#post-id').val();
+            const currentStatus = $('#post-status').val();
+            
+            if (postId && currentStatus) {
+                this.updateButtonsAfterLoad(currentStatus);
+            }
+        },
+
+        // 创建通知容器
+        createNotificationContainer: function() {
+            if (!$('#markdown-editor-notifications').length) {
+                $('body').append('<div id="markdown-editor-notifications" class="markdown-notifications"></div>');
+            }
+        },
+
+        // 显示通知
+        showNotification: function(message, type = 'info', duration = 3000) {
+            const $container = $('#markdown-editor-notifications');
+            const notificationId = 'notification-' + Date.now();
+            const self = this;
+            const $notification = $(`
+                <div id="${notificationId}" class="markdown-notification ${type}">
+                    <span class="notification-message">${message}</span>
+                    <button class="notification-close" data-notification-id="${notificationId}">&times;</button>
+                </div>
+            `);
+            
+            $container.append($notification);
+            
+            // 绑定关闭事件
+            $notification.find('.notification-close').on('click', function() {
+                self.closeNotification($(this).data('notification-id'));
+            });
+            
+            // 自动关闭
+            if (duration > 0) {
+                setTimeout(() => {
+                    self.closeNotification(notificationId);
+                }, duration);
+            }
+        },
+
+        // 关闭通知
+        closeNotification: function(notificationId) {
+            const $notification = $('#' + notificationId);
+            $notification.fadeOut(300, function() {
+                $(this).remove();
+            });
+        },
+
+        // 显示输入对话框
+        showInputDialog: function(title, placeholder, defaultValue = '', callback) {
+            const dialogId = 'input-dialog-' + Date.now();
+            const $dialog = $(`
+                <div id="${dialogId}" class="markdown-modal input-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>${title}</h3>
+                            <button class="modal-close">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" class="dialog-input" placeholder="${placeholder}" value="${defaultValue}">
+                        </div>
+                        <div class="modal-footer">
+                            <button class="button dialog-cancel">取消</button>
+                            <button class="button button-primary dialog-confirm">确定</button>
+                        </div>
+                    </div>
+                </div>
+            `);
+            
+            $('body').append($dialog);
+            
+            const $input = $dialog.find('.dialog-input');
+            $input.focus().select();
+            
+            // 绑定事件
+            $dialog.find('.dialog-confirm').on('click', function() {
+                const value = $input.val().trim();
+                if (value) {
+                    callback(value);
+                }
+                $dialog.remove();
+            });
+            
+            $dialog.find('.dialog-cancel, .modal-close').on('click', function() {
+                $dialog.remove();
+            });
+            
+            // 回车确认
+            $input.on('keypress', function(e) {
+                if (e.which === 13) {
+                    $dialog.find('.dialog-confirm').click();
+                }
+            });
+            
+            // ESC取消
+            $dialog.on('keydown', function(e) {
+                if (e.which === 27) {
+                    $dialog.remove();
+                }
+            });
         },
 
         // 绑定事件
@@ -320,7 +429,9 @@
                     if (file.type.startsWith('image/')) {
                         self.uploadFileToMedia(file, e.originalEvent.target.selectionStart);
                     } else {
-                        alert('请拖拽图片文件');
+                        // 不是图片文件
+                        e.preventDefault();
+                        self.showNotification('请拖拽图片文件', 'error');
                     }
                 }
             });
@@ -427,7 +538,11 @@
             if (this.mediaFrame) {
                 this.mediaFrame.open();
             } else {
-                console.warn('媒体框架未初始化');
+                // 媒体框架未初始化，尝试重新初始化
+                this.setupMediaUpload();
+                if (this.mediaFrame) {
+                    this.mediaFrame.open();
+                }
             }
         },
 
@@ -578,13 +693,13 @@
                         // 标记为已更改
                         self.markAsChanged();
                         
-                        alert('分类创建成功！');
+                        self.showNotification('分类创建成功！', 'success');
                     } else {
-                        alert('分类创建失败：' + (response.data || '未知错误'));
+                        self.showNotification('分类创建失败：' + (response.data || '未知错误'), 'error');
                     }
                 },
                 error: function() {
-                    alert('分类创建失败：网络错误');
+                    self.showNotification('分类创建失败：网络错误', 'error');
                 },
                 complete: function() {
                     $submitBtn.text(originalText).prop('disabled', false);
@@ -643,6 +758,7 @@
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
             const selectedText = textarea.value.substring(start, end);
+            const self = this;
             
             let replacement = '';
             let newCursorPos = start;
@@ -661,27 +777,47 @@
                     newCursorPos = selectedText ? end + 3 : start + 3;
                     break;
                 case 'link':
-                    const url = prompt('请输入链接地址:', 'http://');
-                    if (url) {
-                        replacement = `[${selectedText || '链接文本'}](${url})`;
-                        newCursorPos = selectedText ? end + url.length + 4 : start + 1;
-                    } else {
-                        return;
-                    }
-                    break;
+                    this.showInputDialog('插入链接', '请输入链接地址', 'https://', function(url) {
+                        const replacement = `[${selectedText || '链接文本'}](${url})`;
+                        const newCursorPos = selectedText ? end + url.length + 4 : start + 1;
+                        
+                        // 替换文本
+                        textarea.value = textarea.value.substring(0, start) + 
+                                       replacement + 
+                                       textarea.value.substring(end);
+                        
+                        // 设置光标位置
+                        textarea.focus();
+                        textarea.selectionStart = textarea.selectionEnd = newCursorPos;
+                        
+                        self.updatePreview();
+                        self.updateCounts();
+                        self.markAsChanged();
+                    });
+                    return;
                 case 'media':
                     // 打开WordPress媒体库
                     this.openMediaLibrary();
                     return; // 不需要继续处理文本替换
                 case 'image':
-                    const imgUrl = prompt('请输入图片地址:', 'http://');
-                    if (imgUrl) {
-                        replacement = `![${selectedText || '图片描述'}](${imgUrl})`;
-                        newCursorPos = selectedText ? end + imgUrl.length + 5 : start + 2;
-                    } else {
-                        return;
-                    }
-                    break;
+                    this.showInputDialog('插入图片', '请输入图片地址', 'https://', function(imgUrl) {
+                        const replacement = `![${selectedText || '图片描述'}](${imgUrl})`;
+                        const newCursorPos = selectedText ? end + imgUrl.length + 5 : start + 2;
+                        
+                        // 替换文本
+                        textarea.value = textarea.value.substring(0, start) + 
+                                       replacement + 
+                                       textarea.value.substring(end);
+                        
+                        // 设置光标位置
+                        textarea.focus();
+                        textarea.selectionStart = textarea.selectionEnd = newCursorPos;
+                        
+                        self.updatePreview();
+                        self.updateCounts();
+                        self.markAsChanged();
+                    });
+                    return;
                 case 'code':
                     if (selectedText.includes('\n')) {
                         replacement = `\`\`\`\n${selectedText || '代码'}\n\`\`\``;
@@ -778,7 +914,10 @@
                     if (response.success) {
                         $('#post-title').val(response.data.title);
                         $('#markdown-editor').val(response.data.markdown_content);
-                        $('#post-status').val(response.data.status);
+                        $('#post-status, #post-status-sidebar').val(response.data.status);
+                        
+                        // 更新按钮状态
+                        self.updateButtonsAfterLoad(response.data.status);
                         
                         self.updatePreview();
                         self.updateCounts();
@@ -788,8 +927,35 @@
             });
         },
 
+        // 加载后更新按钮状态
+        updateButtonsAfterLoad: function(status) {
+            const isPublished = status === 'publish';
+            const isPrivate = status === 'private';
+            
+            const $publishBtn = $('#publish-post');
+            const $publishBtnSidebar = $('#publish-post-sidebar');
+            
+            if (isPublished || isPrivate) {
+                $publishBtn.text('更新');
+                $publishBtnSidebar.text('更新');
+                
+                if (isPublished) {
+                    $('.editor-header').addClass('published');
+                }
+            } else {
+                $publishBtn.text('发布');
+                $publishBtnSidebar.text('发布');
+                $('.editor-header').removeClass('published');
+            }
+        },
+
         // 保存文章
         savePost: function(status) {
+            // 防止重复提交
+            if (this.isSaving) {
+                return;
+            }
+            
             const postId = $('#post-id').val();
             const title = $('#post-title').val();
             const markdownContent = $('#markdown-editor').val();
@@ -810,13 +976,13 @@
             }) : [];
             
             if (!title.trim()) {
-                alert('请输入文章标题');
+                this.showNotification('请输入文章标题', 'warning');
                 $('#post-title').focus();
                 return;
             }
 
             if (!markdownContent.trim()) {
-                alert('请输入文章内容');
+                this.showNotification('请输入文章内容', 'warning');
                 $('#markdown-editor').focus();
                 return;
             }
@@ -825,7 +991,13 @@
             const htmlContent = typeof marked !== 'undefined' ? 
                                marked.parse(markdownContent) : markdownContent;
 
+            // 设置保存状态
+            this.isSaving = true;
             this.showSaveStatus('saving');
+            
+            // 禁用按钮
+            const $saveButtons = $('#save-draft, #save-draft-sidebar, #publish-post, #publish-post-sidebar');
+            $saveButtons.prop('disabled', true);
             
             const self = this;
             $.ajax({
@@ -855,16 +1027,28 @@
                         }
                         
                         // 更新状态选择器
-                        $('#post-status').val(postStatus);
+                        $('#post-status, #post-status-sidebar').val(response.data.post_status);
+                        
+                        // 更新按钮文本和状态
+                        self.updateButtonsAfterSave(response.data);
+                        
+                        // 显示成功通知
+                        self.showSuccessNotification(response.data);
                         
                     } else {
                         self.showSaveStatus('error');
-                        alert('保存失败: ' + (response.data || '未知错误'));
+                        self.showNotification('保存失败: ' + (response.data || '未知错误'), 'error');
                     }
                 },
                 error: function() {
                     self.showSaveStatus('error');
-                    alert('保存失败: 网络错误');
+                    self.showNotification('保存失败: 网络错误', 'error');
+                },
+                complete: function() {
+                    // 重置保存状态
+                    self.isSaving = false;
+                    // 重新启用按钮
+                    $saveButtons.prop('disabled', false);
                 }
             });
         },
@@ -905,8 +1089,80 @@
             }, 60000); // 每分钟自动保存一次
         },
 
+        // 更新保存按钮状态
+        updateButtonsAfterSave: function(data) {
+            const isPublished = data.post_status === 'publish';
+            const isPrivate = data.post_status === 'private';
+            
+            // 更新主要发布按钮
+            const $publishBtn = $('#publish-post');
+            const $publishBtnSidebar = $('#publish-post-sidebar');
+            
+            if (isPublished || isPrivate) {
+                $publishBtn.text('更新');
+                $publishBtnSidebar.text('更新');
+            } else {
+                $publishBtn.text('发布');
+                $publishBtnSidebar.text('发布');
+            }
+            
+            // 如果当前文章已发布，更新状态显示
+            if (isPublished) {
+                $('.editor-header').addClass('published');
+            }
+        },
+
+        // 显示成功通知
+        showSuccessNotification: function(data) {
+            const isPublished = data.post_status === 'publish';
+            const isPrivate = data.post_status === 'private';
+            
+            let message = data.message;
+            let notificationType = 'success';
+            
+            // 构建通知内容
+            if (isPublished && data.view_link) {
+                message += '<br><a href="' + data.view_link + '" target="_blank" class="notification-link">查看文章</a>';
+            } else if (isPrivate && data.view_link) {
+                message += '<br><a href="' + data.view_link + '" target="_blank" class="notification-link">查看私有文章</a>';
+            }
+            
+            // 显示HTML通知
+            this.showHTMLNotification(message, notificationType, 5000);
+        },
+
+        // 显示包含HTML的通知
+        showHTMLNotification: function(htmlMessage, type = 'info', duration = 3000) {
+            const $container = $('#markdown-editor-notifications');
+            const notificationId = 'notification-' + Date.now();
+            const self = this;
+            const $notification = $(`
+                <div id="${notificationId}" class="markdown-notification ${type}">
+                    <div class="notification-message">${htmlMessage}</div>
+                    <button class="notification-close" data-notification-id="${notificationId}">&times;</button>
+                </div>
+            `);
+            
+            $container.append($notification);
+            
+            // 绑定关闭事件
+            $notification.find('.notification-close').on('click', function() {
+                self.closeNotification($(this).data('notification-id'));
+            });
+            
+            // 自动关闭
+            if (duration > 0) {
+                setTimeout(() => {
+                    self.closeNotification(notificationId);
+                }, duration);
+            }
+        },
+
         // 未保存更改标志
-        hasUnsavedChanges: false
+        hasUnsavedChanges: false,
+
+        // 保存状态标志
+        isSaving: false
     };
 
     // 页面加载完成后初始化

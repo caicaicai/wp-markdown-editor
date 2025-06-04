@@ -947,6 +947,26 @@
         font-size: 10px;
         padding: 3px 8px;
     }
+    
+    /* 移动端通知系统优化 */
+    .markdown-notifications {
+        top: 46px; /* 移动端admin bar高度 */
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .markdown-notification {
+        margin-bottom: 8px;
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    .notification-close {
+        width: 18px;
+        height: 18px;
+        font-size: 16px;
+    }
 }
 
 /* 加载动画 */
@@ -1007,4 +1027,145 @@
 .tags-suggestions::-webkit-scrollbar-thumb:hover,
 .editor-sidebar::-webkit-scrollbar-thumb:hover {
     background: #a1a1a1;
+}
+
+/* 通知系统样式 */
+.markdown-notifications {
+    position: fixed;
+    top: 32px; /* WordPress admin bar height */
+    right: 20px;
+    z-index: 999999;
+    max-width: 400px;
+}
+
+.markdown-notification {
+    background: #fff;
+    border-left: 4px solid #0073aa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    padding: 12px 16px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: slideInRight 0.3s ease-out;
+}
+
+.markdown-notification.success {
+    border-left-color: #46b450;
+}
+
+.markdown-notification.error {
+    border-left-color: #dc3232;
+}
+
+.markdown-notification.warning {
+    border-left-color: #ffb900;
+}
+
+.markdown-notification.info {
+    border-left-color: #0073aa;
+}
+
+.notification-message {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+    color: #666;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-close:hover {
+    color: #000;
+}
+
+.notification-link {
+    color: #0073aa !important;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-block;
+    margin-top: 5px;
+    padding: 2px 0;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.notification-link:hover {
+    border-bottom-color: #0073aa;
+    text-decoration: none !important;
+}
+
+/* 已发布状态样式 */
+.editor-header.published {
+    background: linear-gradient(90deg, #f0f6fc 0%, #f9f9f9 100%);
+    border-bottom-color: #0073aa;
+}
+
+.editor-header.published .title-section::before {
+    content: '✓ ';
+    color: #46b450;
+    font-weight: bold;
+    margin-right: 5px;
+    font-size: 1.2em;
+    display: inline-block;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* 输入对话框样式 */
+.input-dialog .modal-content {
+    max-width: 500px;
+    width: 90%;
+}
+
+.input-dialog .modal-body {
+    padding: 20px;
+}
+
+.input-dialog .dialog-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.input-dialog .dialog-input:focus {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+    outline: none;
+}
+
+.input-dialog .modal-footer {
+    padding: 15px 20px;
+    text-align: right;
+    border-top: 1px solid #eee;
+}
+
+.input-dialog .modal-footer .button {
+    margin-left: 10px;
 } 

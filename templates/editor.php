@@ -64,7 +64,10 @@ $tags = get_tags(array(
     <hr class="wp-header-end">
     
     <div id="markdown-editor-container">
-        <div class="editor-header">
+        <!-- 隐藏字段用于存储文章ID -->
+        <input type="hidden" id="post-id" value="<?php echo $is_new_post ? '' : $post_id; ?>">
+        
+        <div class="editor-header<?php echo (($post_status === 'publish' || $post_status === 'private') && !$is_new_post) ? ' published' : ''; ?>">
             <div class="title-section">
                 <input type="text" 
                        id="post-title" 
@@ -89,7 +92,7 @@ $tags = get_tags(array(
                         <?php _e('保存草稿', 'advanced-markdown-editor'); ?>
                     </button>
                     <button type="button" id="publish-post" class="button button-primary">
-                        <?php _e('发布', 'advanced-markdown-editor'); ?>
+                        <?php echo (($post_status === 'publish' || $post_status === 'private') && !$is_new_post) ? __('更新', 'advanced-markdown-editor') : __('发布', 'advanced-markdown-editor'); ?>
                     </button>
                 </div>
             </div>
@@ -179,7 +182,7 @@ $tags = get_tags(array(
                                 <?php _e('保存草稿', 'advanced-markdown-editor'); ?>
                             </button>
                             <button type="button" id="publish-post-sidebar" class="button button-primary button-large">
-                                <?php echo ($post_status === 'publish') ? __('更新', 'advanced-markdown-editor') : __('发布', 'advanced-markdown-editor'); ?>
+                                <?php echo (($post_status === 'publish' || $post_status === 'private') && !$is_new_post) ? __('更新', 'advanced-markdown-editor') : __('发布', 'advanced-markdown-editor'); ?>
                             </button>
                         </div>
                         <div class="publish-info">
@@ -344,7 +347,6 @@ $tags = get_tags(array(
     </div>
     
     <!-- 隐藏字段 -->
-    <input type="hidden" id="post-id" value="<?php echo $post_id; ?>">
     <input type="hidden" id="editor-nonce" value="<?php echo wp_create_nonce('wp_markdown_editor_nonce'); ?>">
     
     <!-- 传递标签数据给JavaScript -->

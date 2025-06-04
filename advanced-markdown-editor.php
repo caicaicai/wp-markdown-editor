@@ -300,12 +300,46 @@ class WP_Markdown_Editor {
                 wp_set_post_tags($result, $tags);
             }
             
+            // 获取文章信息
+            $post = get_post($result);
+            $view_link = '';
+            $edit_link = admin_url('admin.php?page=wp-markdown-editor&post=' . $result);
+            
+            if ($status === 'publish') {
+                $view_link = get_permalink($result);
+            } else if ($status === 'private') {
+                $view_link = get_permalink($result);
+            }
+            
             wp_send_json_success(array(
                 'post_id' => $result,
-                'message' => __('文章保存成功', 'advanced-markdown-editor')
+                'post_status' => $status,
+                'view_link' => $view_link,
+                'edit_link' => $edit_link,
+                'is_new_post' => !$post_id,
+                'message' => $this->get_save_success_message($status, !$post_id)
             ));
         } else {
             wp_send_json_error(__('文章保存失败', 'advanced-markdown-editor'));
+        }
+    }
+    
+    /**
+     * 获取保存成功消息
+     */
+    private function get_save_success_message($status, $is_new_post) {
+        if ($status === 'publish') {
+            return $is_new_post ? 
+                __('文章发布成功！', 'advanced-markdown-editor') : 
+                __('文章更新成功！', 'advanced-markdown-editor');
+        } else if ($status === 'private') {
+            return $is_new_post ? 
+                __('私有文章创建成功！', 'advanced-markdown-editor') : 
+                __('私有文章更新成功！', 'advanced-markdown-editor');
+        } else {
+            return $is_new_post ? 
+                __('草稿保存成功！', 'advanced-markdown-editor') : 
+                __('草稿更新成功！', 'advanced-markdown-editor');
         }
     }
     
