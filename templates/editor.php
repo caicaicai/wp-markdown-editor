@@ -95,118 +95,216 @@ $tags = get_tags(array(
             </div>
         </div>
         
-        <!-- 分类和标签选择区域 -->
-        <div class="editor-meta">
-            <div class="meta-section">
-                <div class="categories-section">
-                    <label><?php _e('分类:', 'wp-markdown-editor'); ?></label>
-                    <div class="categories-wrapper">
-                        <?php if (!empty($categories)): ?>
-                            <?php foreach ($categories as $category): ?>
-                                <label class="category-item">
-                                    <input type="checkbox" 
-                                           name="post_categories[]" 
-                                           value="<?php echo $category->term_id; ?>"
-                                           <?php checked(in_array($category->term_id, $post_categories)); ?>>
-                                    <?php echo esc_html($category->name); ?>
-                                </label>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <p class="no-items"><?php _e('暂无分类', 'wp-markdown-editor'); ?></p>
-                        <?php endif; ?>
-                    </div>
-                    <button type="button" class="button button-small" id="add-new-category">
-                        <?php _e('新建分类', 'wp-markdown-editor'); ?>
+        <div class="editor-main">
+            <!-- 主编辑区域 -->
+            <div class="editor-main-content">
+                <div class="editor-tabs">
+                    <button type="button" class="tab-button active" data-tab="write">
+                        <?php _e('编写', 'wp-markdown-editor'); ?>
+                    </button>
+                    <button type="button" class="tab-button" data-tab="preview">
+                        <?php _e('预览', 'wp-markdown-editor'); ?>
+                    </button>
+                    <button type="button" class="tab-button" data-tab="split">
+                        <?php _e('分屏', 'wp-markdown-editor'); ?>
                     </button>
                 </div>
                 
-                <div class="tags-section">
-                    <label for="post-tags"><?php _e('标签:', 'wp-markdown-editor'); ?></label>
-                    <div class="tags-input-wrapper">
-                        <input type="text" 
-                               id="post-tags" 
-                               name="post_tags" 
-                               placeholder="<?php _e('输入标签，用逗号分隔', 'wp-markdown-editor'); ?>"
-                               value="<?php 
-                                   if (!empty($post_tags)) {
-                                       $tag_names = array();
-                                       foreach ($post_tags as $tag_id) {
-                                           $tag = get_tag($tag_id);
-                                           if ($tag) {
-                                               $tag_names[] = $tag->name;
-                                           }
-                                       }
-                                       echo esc_attr(implode(', ', $tag_names));
-                                   }
-                               ?>">
-                        <div class="tags-suggestions" id="tags-suggestions" style="display: none;"></div>
+                <div class="editor-content">
+                    <div class="editor-pane write-pane active">
+                        <div class="toolbar">
+                            <button type="button" class="toolbar-button" data-action="bold" title="<?php _e('粗体', 'wp-markdown-editor'); ?>">
+                                <span class="dashicons dashicons-editor-bold"></span>
+                            </button>
+                            <button type="button" class="toolbar-button" data-action="italic" title="<?php _e('斜体', 'wp-markdown-editor'); ?>">
+                                <span class="dashicons dashicons-editor-italic"></span>
+                            </button>
+                            <button type="button" class="toolbar-button" data-action="heading" title="<?php _e('标题', 'wp-markdown-editor'); ?>">
+                                <span class="dashicons dashicons-heading"></span>
+                            </button>
+                            <button type="button" class="toolbar-button" data-action="link" title="<?php _e('链接', 'wp-markdown-editor'); ?>">
+                                <span class="dashicons dashicons-admin-links"></span>
+                            </button>
+                            <button type="button" class="toolbar-button" data-action="image" title="<?php _e('图片', 'wp-markdown-editor'); ?>">
+                                <span class="dashicons dashicons-format-image"></span>
+                            </button>
+                            <button type="button" class="toolbar-button" data-action="code" title="<?php _e('代码', 'wp-markdown-editor'); ?>">
+                                <span class="dashicons dashicons-editor-code"></span>
+                            </button>
+                            <button type="button" class="toolbar-button" data-action="quote" title="<?php _e('引用', 'wp-markdown-editor'); ?>">
+                                <span class="dashicons dashicons-editor-quote"></span>
+                            </button>
+                            <button type="button" class="toolbar-button" data-action="list" title="<?php _e('列表', 'wp-markdown-editor'); ?>">
+                                <span class="dashicons dashicons-editor-ul"></span>
+                            </button>
+                        </div>
+                        
+                        <textarea id="markdown-editor" 
+                                  name="markdown_content" 
+                                  placeholder="<?php _e('在此输入Markdown内容...', 'wp-markdown-editor'); ?>"><?php echo esc_textarea($markdown_content); ?></textarea>
                     </div>
-                    <p class="description"><?php _e('多个标签用逗号分隔，支持自动提示', 'wp-markdown-editor'); ?></p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="editor-tabs">
-            <button type="button" class="tab-button active" data-tab="write">
-                <?php _e('编写', 'wp-markdown-editor'); ?>
-            </button>
-            <button type="button" class="tab-button" data-tab="preview">
-                <?php _e('预览', 'wp-markdown-editor'); ?>
-            </button>
-            <button type="button" class="tab-button" data-tab="split">
-                <?php _e('分屏', 'wp-markdown-editor'); ?>
-            </button>
-        </div>
-        
-        <div class="editor-content">
-            <div class="editor-pane write-pane active">
-                <div class="toolbar">
-                    <button type="button" class="toolbar-button" data-action="bold" title="<?php _e('粗体', 'wp-markdown-editor'); ?>">
-                        <span class="dashicons dashicons-editor-bold"></span>
-                    </button>
-                    <button type="button" class="toolbar-button" data-action="italic" title="<?php _e('斜体', 'wp-markdown-editor'); ?>">
-                        <span class="dashicons dashicons-editor-italic"></span>
-                    </button>
-                    <button type="button" class="toolbar-button" data-action="heading" title="<?php _e('标题', 'wp-markdown-editor'); ?>">
-                        <span class="dashicons dashicons-heading"></span>
-                    </button>
-                    <button type="button" class="toolbar-button" data-action="link" title="<?php _e('链接', 'wp-markdown-editor'); ?>">
-                        <span class="dashicons dashicons-admin-links"></span>
-                    </button>
-                    <button type="button" class="toolbar-button" data-action="image" title="<?php _e('图片', 'wp-markdown-editor'); ?>">
-                        <span class="dashicons dashicons-format-image"></span>
-                    </button>
-                    <button type="button" class="toolbar-button" data-action="code" title="<?php _e('代码', 'wp-markdown-editor'); ?>">
-                        <span class="dashicons dashicons-editor-code"></span>
-                    </button>
-                    <button type="button" class="toolbar-button" data-action="quote" title="<?php _e('引用', 'wp-markdown-editor'); ?>">
-                        <span class="dashicons dashicons-editor-quote"></span>
-                    </button>
-                    <button type="button" class="toolbar-button" data-action="list" title="<?php _e('列表', 'wp-markdown-editor'); ?>">
-                        <span class="dashicons dashicons-editor-ul"></span>
-                    </button>
+                    
+                    <div class="editor-pane preview-pane">
+                        <div class="preview-content" id="preview-content">
+                            <p class="no-content"><?php _e('预览将在这里显示...', 'wp-markdown-editor'); ?></p>
+                        </div>
+                    </div>
                 </div>
                 
-                <textarea id="markdown-editor" 
-                          name="markdown_content" 
-                          placeholder="<?php _e('在此输入Markdown内容...', 'wp-markdown-editor'); ?>"><?php echo esc_textarea($markdown_content); ?></textarea>
+                <div class="editor-footer">
+                    <div class="save-status">
+                        <span id="save-status"></span>
+                    </div>
+                    <div class="editor-info">
+                        <span id="word-count">0 <?php _e('字', 'wp-markdown-editor'); ?></span>
+                        <span class="separator">|</span>
+                        <span id="line-count">0 <?php _e('行', 'wp-markdown-editor'); ?></span>
+                    </div>
+                </div>
             </div>
             
-            <div class="editor-pane preview-pane">
-                <div class="preview-content" id="preview-content">
-                    <p class="no-content"><?php _e('预览将在这里显示...', 'wp-markdown-editor'); ?></p>
+            <!-- 右侧边栏 -->
+            <div class="editor-sidebar">
+                <!-- 发布状态卡片 -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><?php _e('发布', 'wp-markdown-editor'); ?></h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="publish-actions">
+                            <button type="button" id="save-draft-sidebar" class="button button-large">
+                                <?php _e('保存草稿', 'wp-markdown-editor'); ?>
+                            </button>
+                            <button type="button" id="publish-post-sidebar" class="button button-primary button-large">
+                                <?php echo ($post_status === 'publish') ? __('更新', 'wp-markdown-editor') : __('发布', 'wp-markdown-editor'); ?>
+                            </button>
+                        </div>
+                        <div class="publish-info">
+                            <div class="info-item">
+                                <label for="post-status-sidebar"><?php _e('状态:', 'wp-markdown-editor'); ?></label>
+                                <select id="post-status-sidebar" name="post_status">
+                                    <option value="draft" <?php selected($post_status, 'draft'); ?>><?php _e('草稿', 'wp-markdown-editor'); ?></option>
+                                    <option value="publish" <?php selected($post_status, 'publish'); ?>><?php _e('发布', 'wp-markdown-editor'); ?></option>
+                                    <option value="private" <?php selected($post_status, 'private'); ?>><?php _e('私有', 'wp-markdown-editor'); ?></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        
-        <div class="editor-footer">
-            <div class="save-status">
-                <span id="save-status"></span>
-            </div>
-            <div class="editor-info">
-                <span id="word-count">0 <?php _e('字', 'wp-markdown-editor'); ?></span>
-                <span class="separator">|</span>
-                <span id="line-count">0 <?php _e('行', 'wp-markdown-editor'); ?></span>
+                
+                <!-- 分类卡片 -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><?php _e('分类', 'wp-markdown-editor'); ?></h3>
+                        <button type="button" class="button button-small" id="add-new-category">
+                            <?php _e('新建', 'wp-markdown-editor'); ?>
+                        </button>
+                    </div>
+                    <div class="card-content">
+                        <div class="categories-tree">
+                            <?php if (!empty($categories)): ?>
+                                <?php
+                                // 构建分类树
+                                function build_category_tree($categories, $parent_id = 0, $post_categories = array(), $level = 0) {
+                                    $tree = '';
+                                    foreach ($categories as $category) {
+                                        if ($category->parent == $parent_id) {
+                                            $checked = in_array($category->term_id, $post_categories) ? 'checked' : '';
+                                            $tree .= '<div class="category-tree-item" data-level="' . $level . '">';
+                                            $tree .= '<label class="category-label">';
+                                            $tree .= '<input type="checkbox" name="post_categories[]" value="' . $category->term_id . '" ' . $checked . '>';
+                                            $tree .= '<span class="category-name">' . esc_html($category->name) . '</span>';
+                                            $tree .= '</label>';
+                                            
+                                            // 递归显示子分类
+                                            $children = build_category_tree($categories, $category->term_id, $post_categories, $level + 1);
+                                            if ($children) {
+                                                $tree .= '<div class="category-children">' . $children . '</div>';
+                                            }
+                                            
+                                            $tree .= '</div>';
+                                        }
+                                    }
+                                    return $tree;
+                                }
+                                
+                                echo build_category_tree($categories, 0, $post_categories);
+                                ?>
+                            <?php else: ?>
+                                <p class="no-items"><?php _e('暂无分类', 'wp-markdown-editor'); ?></p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 标签卡片 -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><?php _e('标签', 'wp-markdown-editor'); ?></h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="tags-input-wrapper">
+                            <textarea id="post-tags" 
+                                     name="post_tags" 
+                                     rows="3"
+                                     placeholder="<?php _e('输入标签，用逗号分隔', 'wp-markdown-editor'); ?>"><?php 
+                                if (!empty($post_tags)) {
+                                    $tag_names = array();
+                                    foreach ($post_tags as $tag_id) {
+                                        $tag = get_tag($tag_id);
+                                        if ($tag) {
+                                            $tag_names[] = $tag->name;
+                                        }
+                                    }
+                                    echo esc_textarea(implode(', ', $tag_names));
+                                }
+                            ?></textarea>
+                            <div class="tags-suggestions" id="tags-suggestions" style="display: none;"></div>
+                        </div>
+                        <p class="description"><?php _e('多个标签用逗号分隔', 'wp-markdown-editor'); ?></p>
+                        
+                        <!-- 常用标签快速选择 -->
+                        <?php if (!empty($tags)): ?>
+                        <div class="popular-tags">
+                            <label class="tags-label"><?php _e('常用标签:', 'wp-markdown-editor'); ?></label>
+                            <div class="tags-cloud">
+                                <?php foreach (array_slice($tags, 0, 10) as $tag): ?>
+                                    <button type="button" class="tag-cloud-item" data-tag="<?php echo esc_attr($tag->name); ?>">
+                                        <?php echo esc_html($tag->name); ?>
+                                    </button>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                
+                <!-- 统计信息卡片 -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3><?php _e('统计信息', 'wp-markdown-editor'); ?></h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label"><?php _e('字数', 'wp-markdown-editor'); ?></span>
+                                <span class="stat-value" id="word-count-sidebar">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label"><?php _e('行数', 'wp-markdown-editor'); ?></span>
+                                <span class="stat-value" id="line-count-sidebar">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label"><?php _e('字符', 'wp-markdown-editor'); ?></span>
+                                <span class="stat-value" id="char-count-sidebar">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label"><?php _e('段落', 'wp-markdown-editor'); ?></span>
+                                <span class="stat-value" id="paragraph-count-sidebar">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

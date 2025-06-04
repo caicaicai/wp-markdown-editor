@@ -71,76 +71,167 @@
     gap: 10px;
 }
 
-/* 分类和标签选择区域 */
-.editor-meta {
-    padding: 15px 20px;
+/* 主编辑区域布局 */
+.editor-main {
+    display: flex;
+    min-height: 70vh;
+}
+
+.editor-main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* 允许flex项目收缩 */
+}
+
+.editor-sidebar {
+    width: 300px;
+    background: #f8f9fa;
+    border-left: 1px solid #e1e1e1;
+    overflow-y: auto;
+    max-height: 85vh;
+}
+
+/* 侧边栏卡片样式 */
+.sidebar-card {
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    margin: 15px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-card:first-child {
+    margin-top: 20px;
+}
+
+.sidebar-card:last-child {
+    margin-bottom: 20px;
+}
+
+.card-header {
+    padding: 12px 15px;
     background: #f8f9fa;
     border-bottom: 1px solid #e1e1e1;
-}
-
-.meta-section {
+    border-radius: 4px 4px 0 0;
     display: flex;
-    gap: 30px;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.categories-section,
-.tags-section {
-    flex: 1;
-    min-width: 300px;
-}
-
-.categories-section label,
-.tags-section label {
-    display: block;
+.card-header h3 {
+    margin: 0;
+    font-size: 14px;
     font-weight: 600;
-    margin-bottom: 8px;
-    color: #555;
+    color: #333;
 }
 
-.categories-wrapper {
-    max-height: 150px;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    padding: 10px;
-    background: #fff;
+.card-content {
+    padding: 15px;
+}
+
+/* 发布卡片 */
+.publish-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.publish-actions .button {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+}
+
+.publish-info .info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 10px;
 }
 
-.category-item {
-    display: block;
-    padding: 4px 0;
-    font-weight: normal;
-    cursor: pointer;
-    margin-bottom: 4px;
-}
-
-.category-item:last-child {
+.publish-info .info-item:last-child {
     margin-bottom: 0;
 }
 
-.category-item input[type="checkbox"] {
-    margin-right: 8px;
+.publish-info label {
+    font-weight: 600;
+    color: #555;
+    font-size: 13px;
 }
 
-.category-item:hover {
-    background: #f0f0f0;
-    border-radius: 2px;
-    padding-left: 4px;
-    padding-right: 4px;
+.publish-info select {
+    width: 120px;
+    font-size: 12px;
 }
 
-.no-items {
-    color: #999;
-    font-style: italic;
+/* 分类树形结构 */
+.categories-tree {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.category-tree-item {
+    margin-bottom: 4px;
+}
+
+.category-tree-item[data-level="0"] {
+    border-left: none;
+    padding-left: 0;
+}
+
+.category-tree-item[data-level="1"] {
+    border-left: 2px solid #ddd;
+    padding-left: 15px;
+    margin-left: 10px;
+}
+
+.category-tree-item[data-level="2"] {
+    border-left: 2px solid #ccc;
+    padding-left: 15px;
+    margin-left: 25px;
+}
+
+.category-tree-item[data-level="3"] {
+    border-left: 2px solid #bbb;
+    padding-left: 15px;
+    margin-left: 40px;
+}
+
+.category-label {
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 13px;
     margin: 0;
-    padding: 20px;
-    text-align: center;
 }
 
+.category-label:hover {
+    background: #f0f0f0;
+}
+
+.category-label input[type="checkbox"] {
+    margin-right: 8px;
+    margin-top: 0;
+}
+
+.category-name {
+    color: #333;
+    font-weight: normal;
+}
+
+.category-children {
+    margin-top: 2px;
+}
+
+/* 标签样式 */
 .tags-input-wrapper {
     position: relative;
+    margin-bottom: 15px;
 }
 
 #post-tags {
@@ -148,7 +239,10 @@
     padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 3px;
-    font-size: 14px;
+    font-size: 13px;
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
 }
 
 #post-tags:focus {
@@ -176,6 +270,7 @@
     padding: 8px 12px;
     cursor: pointer;
     border-bottom: 1px solid #f0f0f0;
+    font-size: 13px;
 }
 
 .tag-suggestion:last-child {
@@ -190,8 +285,85 @@
 .description {
     font-size: 12px;
     color: #666;
-    margin: 5px 0 0 0;
+    margin: 8px 0 0 0;
+    font-style: normal;
+}
+
+/* 常用标签云 */
+.popular-tags {
+    border-top: 1px solid #e1e1e1;
+    padding-top: 12px;
+    margin-top: 12px;
+}
+
+.tags-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tag-cloud-item {
+    background: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #555;
+}
+
+.tag-cloud-item:hover {
+    background: #007cba;
+    color: #fff;
+    border-color: #007cba;
+}
+
+/* 统计信息网格 */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 3px;
+    border: 1px solid #e1e1e1;
+}
+
+.stat-label {
+    display: block;
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.stat-value {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.no-items {
+    color: #999;
     font-style: italic;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    font-size: 13px;
 }
 
 /* 标签页 */
@@ -229,6 +401,7 @@
     display: flex;
     min-height: 500px;
     position: relative;
+    flex: 1;
 }
 
 .editor-pane {
@@ -591,6 +764,41 @@
 }
 
 /* 响应式设计 */
+@media (max-width: 1200px) {
+    .editor-sidebar {
+        width: 280px;
+    }
+}
+
+@media (max-width: 900px) {
+    .editor-main {
+        flex-direction: column;
+    }
+    
+    .editor-sidebar {
+        width: 100%;
+        max-height: none;
+        border-left: none;
+        border-top: 1px solid #e1e1e1;
+    }
+    
+    .sidebar-card {
+        margin: 10px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .stat-item {
+        padding: 8px;
+    }
+    
+    .stat-value {
+        font-size: 14px;
+    }
+}
+
 @media (max-width: 768px) {
     .editor-header {
         flex-direction: column;
@@ -599,16 +807,6 @@
     
     .editor-actions {
         justify-content: space-between;
-    }
-    
-    .meta-section {
-        flex-direction: column;
-        gap: 20px;
-    }
-    
-    .categories-section,
-    .tags-section {
-        min-width: auto;
     }
     
     .editor-content {
@@ -651,6 +849,28 @@
         font-weight: 600;
         margin-bottom: 5px;
     }
+    
+    .sidebar-card {
+        margin: 8px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    
+    .publish-actions {
+        gap: 8px;
+    }
+    
+    .tags-cloud {
+        gap: 4px;
+    }
+    
+    .tag-cloud-item {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
 }
 
 /* 加载动画 */
@@ -682,29 +902,33 @@
 /* 自定义滚动条 */
 #markdown-editor::-webkit-scrollbar,
 .preview-content::-webkit-scrollbar,
-.categories-wrapper::-webkit-scrollbar,
-.tags-suggestions::-webkit-scrollbar {
+.categories-tree::-webkit-scrollbar,
+.tags-suggestions::-webkit-scrollbar,
+.editor-sidebar::-webkit-scrollbar {
     width: 8px;
 }
 
 #markdown-editor::-webkit-scrollbar-track,
 .preview-content::-webkit-scrollbar-track,
-.categories-wrapper::-webkit-scrollbar-track,
-.tags-suggestions::-webkit-scrollbar-track {
+.categories-tree::-webkit-scrollbar-track,
+.tags-suggestions::-webkit-scrollbar-track,
+.editor-sidebar::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 
 #markdown-editor::-webkit-scrollbar-thumb,
 .preview-content::-webkit-scrollbar-thumb,
-.categories-wrapper::-webkit-scrollbar-thumb,
-.tags-suggestions::-webkit-scrollbar-thumb {
+.categories-tree::-webkit-scrollbar-thumb,
+.tags-suggestions::-webkit-scrollbar-thumb,
+.editor-sidebar::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 4px;
 }
 
 #markdown-editor::-webkit-scrollbar-thumb:hover,
 .preview-content::-webkit-scrollbar-thumb:hover,
-.categories-wrapper::-webkit-scrollbar-thumb:hover,
-.tags-suggestions::-webkit-scrollbar-thumb:hover {
+.categories-tree::-webkit-scrollbar-thumb:hover,
+.tags-suggestions::-webkit-scrollbar-thumb:hover,
+.editor-sidebar::-webkit-scrollbar-thumb:hover {
     background: #a1a1a1;
 } 

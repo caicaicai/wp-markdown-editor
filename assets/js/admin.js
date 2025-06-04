@@ -45,8 +45,11 @@
                 self.markAsChanged();
             });
 
-            // 状态改变事件
-            $('#post-status').on('change', function() {
+            // 状态改变事件 (支持头部和侧边栏两个选择器)
+            $('#post-status, #post-status-sidebar').on('change', function() {
+                const status = $(this).val();
+                // 同步两个状态选择器
+                $('#post-status, #post-status-sidebar').val(status);
                 self.markAsChanged();
             });
 
@@ -61,13 +64,21 @@
                 self.showTagSuggestions($(this).val());
             });
 
-            // 保存按钮
-            $('#save-draft').on('click', function() {
+            // 常用标签快速选择
+            $(document).on('click', '.tag-cloud-item', function() {
+                const tagName = $(this).data('tag');
+                self.addQuickTag(tagName);
+            });
+
+            // 保存按钮 (支持头部和侧边栏按钮)
+            $('#save-draft, #save-draft-sidebar').on('click', function() {
                 self.savePost('draft');
             });
 
-            $('#publish-post').on('click', function() {
-                self.savePost('publish');
+            $('#publish-post, #publish-post-sidebar').on('click', function() {
+                const currentStatus = $('#post-status').val();
+                const newStatus = currentStatus === 'publish' ? 'publish' : 'publish';
+                self.savePost(newStatus);
             });
 
             // 新建分类按钮
@@ -283,6 +294,20 @@
             this.markAsChanged();
         },
 
+        // 快速添加标签
+        addQuickTag: function(tagName) {
+            const $tagsInput = $('#post-tags');
+            const currentValue = $tagsInput.val().trim();
+            const existingTags = currentValue ? currentValue.split(',').map(tag => tag.trim()) : [];
+            
+            // 检查标签是否已存在
+            if (existingTags.indexOf(tagName) === -1) {
+                const newValue = currentValue ? currentValue + ', ' + tagName : tagName;
+                $tagsInput.val(newValue).focus();
+                this.markAsChanged();
+            }
+        },
+
         // 创建新分类
         createNewCategory: function() {
             const $form = $('#new-category-form');
@@ -307,20 +332,55 @@
                 data: formData,
                 success: function(response) {
                     if (response.success) {
-                        // 添加新分类到列表
+                        // 添加新分类到树形列表
                         const newCategory = response.data;
-                        const $categoriesWrapper = $('.categories-wrapper');
+                        const $categoriesTree = $('.categories-tree');
                         
-                        if ($categoriesWrapper.find('.no-items').length) {
-                            $categoriesWrapper.html('');
+                        if ($categoriesTree.find('.no-items').length) {
+                            $categoriesTree.html('');
                         }
                         
-                        const categoryHtml = '<label class="category-item">' +
+                        // 确定插入位置（根据父级分类）
+                        const parentId = parseInt(newCategory.parent);
+                        let categoryHtml = '<div class="category-tree-item" data-level="0">' +
+                            '<label class="category-label">' +
                             '<input type="checkbox" name="post_categories[]" value="' + newCategory.term_id + '" checked>' +
-                            newCategory.name +
-                            '</label>';
+                            '<span class="category-name">' + newCategory.name + '</span>' +
+                            '</label>' +
+                            '</div>';
                         
-                        $categoriesWrapper.append(categoryHtml);
+                        if (parentId > 0) {
+                            // 作为子分类添加
+                            const $parentItem = $categoriesTree.find('input[value="' + parentId + '"]').closest('.category-tree-item');
+                            if ($parentItem.length) {
+                                let $children = $parentItem.find('> .category-children');
+                                if (!$children.length) {
+                                    $children = $('<div class="category-children"></div>');
+                                    $parentItem.append($children);
+                                }
+                                
+                                const parentLevel = parseInt($parentItem.attr('data-level'));
+                                categoryHtml = '<div class="category-tree-item" data-level="' + (parentLevel + 1) + '">' +
+                                    '<label class="category-label">' +
+                                    '<input type="checkbox" name="post_categories[]" value="' + newCategory.term_id + '" checked>' +
+                                    '<span class="category-name">' + newCategory.name + '</span>' +
+                                    '</label>' +
+                                    '</div>';
+                                
+                                $children.append(categoryHtml);
+                            } else {
+                                // 如果找不到父级，就添加到根级
+                                $categoriesTree.append(categoryHtml);
+                            }
+                        } else {
+                            // 添加到根级
+                            $categoriesTree.append(categoryHtml);
+                        }
+                        
+                        // 绑定新分类的change事件
+                        $categoriesTree.find('input[name="post_categories[]"]').off('change').on('change', function() {
+                            self.markAsChanged();
+                        });
                         
                         // 关闭模态框并重置表单
                         $('#new-category-modal').hide();
@@ -347,16 +407,21 @@
         resizeEditor: function() {
             const windowHeight = $(window).height();
             const headerHeight = $('.editor-header').outerHeight();
-            const metaHeight = $('.editor-meta').outerHeight();
             const tabsHeight = $('.editor-tabs').outerHeight();
             const toolbarHeight = $('.toolbar').outerHeight();
             const footerHeight = $('.editor-footer').outerHeight();
             const adminBarHeight = $('#wpadminbar').outerHeight() || 0;
             
-            const availableHeight = windowHeight - headerHeight - metaHeight - tabsHeight - 
-                                  toolbarHeight - footerHeight - adminBarHeight - 100;
+            // 计算可用高度，考虑侧边栏布局
+            const availableHeight = windowHeight - headerHeight - tabsHeight - 
+                                  toolbarHeight - footerHeight - adminBarHeight - 120;
             
-            $('#markdown-editor, .preview-content').css('min-height', Math.max(400, availableHeight) + 'px');
+            const minHeight = Math.max(400, availableHeight);
+            $('#markdown-editor, .preview-content').css('min-height', minHeight + 'px');
+            
+            // 调整侧边栏高度
+            const sidebarHeight = windowHeight - headerHeight - adminBarHeight - 40;
+            $('.editor-sidebar').css('max-height', Math.max(500, sidebarHeight) + 'px');
         },
 
         // 切换标签页
@@ -478,9 +543,18 @@
             const content = $('#markdown-editor').val();
             const wordCount = content.replace(/\s/g, '').length;
             const lineCount = content.split('\n').length;
+            const charCount = content.length;
+            const paragraphCount = content.split(/\n\s*\n/).filter(p => p.trim().length > 0).length;
             
+            // 更新底部状态栏
             $('#word-count').text(wordCount + ' 字');
             $('#line-count').text(lineCount + ' 行');
+            
+            // 更新侧边栏详细统计
+            $('#word-count-sidebar').text(wordCount);
+            $('#line-count-sidebar').text(lineCount);
+            $('#char-count-sidebar').text(charCount);
+            $('#paragraph-count-sidebar').text(paragraphCount);
         },
 
         // 标记为已更改
