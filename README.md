@@ -12,6 +12,10 @@
 - 🔄 **双向兼容** - 可在Markdown和原生编辑器间切换
 - 📱 **响应式设计** - 支持各种设备尺寸
 - 🎨 **现代化界面** - 美观易用的编辑界面
+- 🌍 **多语言支持** - 支持中文、英语、法语、德语、俄语、日语
+- 🏷️ **分类标签管理** - 树形分类结构，标签自动提示
+- 📷 **图片上传** - 支持拖拽上传和媒体库集成
+- 📊 **统计信息** - 实时显示字数、行数、字符数、段落数
 
 ## 📦 安装
 
@@ -138,7 +142,20 @@ wp-markdown-editor/
 │   │   └── admin.css         # 管理样式
 │   └── js/
 │       └── admin.js          # 管理脚本
-└── README.md                 # 说明文档
+├── languages/                # 多语言文件
+│   ├── wp-markdown-editor.pot       # 翻译模板
+│   ├── wp-markdown-editor-en_US.po  # 英语翻译
+│   ├── wp-markdown-editor-en_US.mo  # 英语编译文件
+│   ├── wp-markdown-editor-fr_FR.po  # 法语翻译
+│   ├── wp-markdown-editor-fr_FR.mo  # 法语编译文件
+│   ├── wp-markdown-editor-de_DE.po  # 德语翻译
+│   ├── wp-markdown-editor-de_DE.mo  # 德语编译文件
+│   ├── wp-markdown-editor-ru_RU.po  # 俄语翻译
+│   ├── wp-markdown-editor-ru_RU.mo  # 俄语编译文件
+│   ├── wp-markdown-editor-ja.po     # 日语翻译
+│   └── wp-markdown-editor-ja.mo     # 日语编译文件
+├── README.md                 # 说明文档
+└── MULTILINGUAL.md           # 多语言说明文档
 ```
 
 ## 🔄 数据存储
@@ -174,6 +191,26 @@ wp-markdown-editor/
 - 优化数据库查询
 - 缓存机制减少服务器负载
 
+## 🌍 多语言支持
+
+插件现已支持多种语言，为全球用户提供本地化体验：
+
+### 支持的语言
+- **中文 (简体)** - `zh_CN` (默认)
+- **English** - `en_US`
+- **Français** - `fr_FR`
+- **Deutsch** - `de_DE`
+- **Русский** - `ru_RU`
+- **日本語** - `ja`
+
+### 语言切换方法
+1. **WordPress设置** - 进入 设置 → 常规 → 站点语言
+2. **wp-config.php** - 添加 `define('WPLANG', 'en_US');`
+3. **用户设置** - 在个人资料中设置语言偏好
+
+### 翻译贡献
+欢迎为插件贡献翻译！详细信息请查看 [MULTILINGUAL.md](MULTILINGUAL.md) 文档。
+
 ## 🐛 常见问题
 
 ### Q: 插件会影响现有的文章吗？
@@ -194,8 +231,14 @@ A: Markdown源码存储在WordPress数据库的post meta中，跟随文章一起
 - 🎉 首次发布
 - ✨ 基本Markdown编辑功能
 - 🎨 现代化编辑界面
-- 💾 自动保存功能
+- �� 自动保存功能
 - 📱 响应式设计
+- 🌍 多语言支持（中文、英语、法语、德语、俄语、日语）
+- 🏷️ 分类标签管理系统
+- 📷 图片上传和媒体库集成
+- 📊 实时统计信息显示
+- 🔧 键盘快捷键支持
+- 💾 自动保存和草稿功能
 
 ## 🤝 贡献
 

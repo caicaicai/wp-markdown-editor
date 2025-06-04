@@ -1,0 +1,282 @@
+# WordPress Markdown Editor - Russian Translation
+# Copyright (C) 2024 WordPress Markdown Editor
+msgid ""
+msgstr ""
+"Project-Id-Version: WordPress Markdown Editor 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/caicaicai/wp-markdown-editor\n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"PO-Revision-Date: 2024-01-01 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "Markdown 编辑器"
+msgstr "Markdown Редактор"
+
+msgid "新建文章"
+msgstr "Новая запись"
+
+msgid "文章列表"
+msgstr "Записи"
+
+msgid "安全验证失败"
+msgstr "Ошибка проверки безопасности"
+
+msgid "权限不足"
+msgstr "Недостаточно прав"
+
+msgid "文章保存成功"
+msgstr "Запись успешно сохранена"
+
+msgid "文章保存失败"
+msgstr "Ошибка сохранения записи"
+
+msgid "您没有权限编辑此文章"
+msgstr "У вас нет прав для редактирования этой записи"
+
+msgid "文章不存在或权限不足"
+msgstr "Запись не существует или недостаточно прав"
+
+msgid "您没有权限创建分类"
+msgstr "У вас нет прав для создания категорий"
+
+msgid "分类名称不能为空"
+msgstr "Имя категории не может быть пустым"
+
+msgid "分类名称已存在"
+msgstr "Имя категории уже существует"
+
+msgid "父级分类不存在"
+msgstr "Родительская категория не существует"
+
+msgid "分类创建失败: "
+msgstr "Ошибка создания категории: "
+
+msgid "分类创建成功"
+msgstr "Категория успешно создана"
+
+msgid "您没有权限上传文件"
+msgstr "У вас нет прав для загрузки файлов"
+
+msgid "没有选择文件"
+msgstr "Файл не выбран"
+
+msgid "不支持的文件类型"
+msgstr "Неподдерживаемый тип файла"
+
+msgid "文件大小超过限制"
+msgstr "Размер файла превышает лимит"
+
+msgid "附件创建失败"
+msgstr "Ошибка создания вложения"
+
+msgid "图片上传成功"
+msgstr "Изображение успешно загружено"
+
+msgid "保存中..."
+msgstr "Сохранение..."
+
+msgid "已保存"
+msgstr "Сохранено"
+
+msgid "保存失败"
+msgstr "Ошибка сохранения"
+
+msgid "选择图片"
+msgstr "Выбрать изображение"
+
+msgid "插入图片"
+msgstr "Вставить изображение"
+
+msgid "上传图片"
+msgstr "Загрузить изображение"
+
+msgid "用Markdown编辑器编辑"
+msgstr "Редактировать в Markdown редакторе"
+
+msgid "Markdown编辑"
+msgstr "Markdown редактирование"
+
+msgid "此文章使用Markdown编辑器创建"
+msgstr "Эта запись была создана в Markdown редакторе"
+
+msgid "新建Markdown文章"
+msgstr "Новая Markdown запись"
+
+msgid "编辑Markdown文章"
+msgstr "Редактировать Markdown запись"
+
+msgid "在此输入标题"
+msgstr "Введите заголовок здесь"
+
+msgid "状态:"
+msgstr "Статус:"
+
+msgid "草稿"
+msgstr "Черновик"
+
+msgid "发布"
+msgstr "Опубликовано"
+
+msgid "私有"
+msgstr "Приватная"
+
+msgid "保存草稿"
+msgstr "Сохранить черновик"
+
+msgid "更新"
+msgstr "Обновить"
+
+msgid "分类"
+msgstr "Категории"
+
+msgid "新建"
+msgstr "Новая"
+
+msgid "暂无分类"
+msgstr "Нет категорий"
+
+msgid "标签"
+msgstr "Метки"
+
+msgid "输入标签，用逗号分隔"
+msgstr "Введите метки, разделенные запятыми"
+
+msgid "多个标签用逗号分隔"
+msgstr "Разделяйте несколько меток запятыми"
+
+msgid "常用标签:"
+msgstr "Популярные метки:"
+
+msgid "图片"
+msgstr "Изображения"
+
+msgid "媒体库"
+msgstr "Медиабиблиотека"
+
+msgid "插入图片链接"
+msgstr "Вставить ссылку на изображение"
+
+msgid "支持拖拽图片到编辑器区域快速插入"
+msgstr "Перетащите изображения в редактор для быстрой вставки"
+
+msgid "快捷键:"
+msgstr "Горячие клавиши:"
+
+msgid "统计信息"
+msgstr "Статистика"
+
+msgid "字数"
+msgstr "Слова"
+
+msgid "行数"
+msgstr "Строки"
+
+msgid "字符"
+msgstr "Символы"
+
+msgid "段落"
+msgstr "Абзацы"
+
+msgid "编写"
+msgstr "Редактировать"
+
+msgid "预览"
+msgstr "Предпросмотр"
+
+msgid "分屏"
+msgstr "Разделенный вид"
+
+msgid "粗体"
+msgstr "Жирный"
+
+msgid "斜体"
+msgstr "Курсив"
+
+msgid "标题"
+msgstr "Заголовок"
+
+msgid "链接"
+msgstr "Ссылка"
+
+msgid "代码"
+msgstr "Код"
+
+msgid "引用"
+msgstr "Цитата"
+
+msgid "列表"
+msgstr "Список"
+
+msgid "在此输入Markdown内容..."
+msgstr "Введите Markdown содержимое здесь..."
+
+msgid "预览将在这里显示..."
+msgstr "Предпросмотр будет отображен здесь..."
+
+msgid "字"
+msgstr "слов"
+
+msgid "新建分类"
+msgstr "Новая категория"
+
+msgid "分类名称"
+msgstr "Имя категории"
+
+msgid "别名"
+msgstr "Псевдоним"
+
+msgid "别名是在URL中使用的版本，通常为小写，只包含字母、数字和连字符。"
+msgstr "Псевдоним - это URL-совместимая версия имени. Обычно написан строчными буквами и содержит только буквы, цифры и дефисы."
+
+msgid "父级分类"
+msgstr "Родительская категория"
+
+msgid "无（顶级分类）"
+msgstr "Нет (верхний уровень)"
+
+msgid "描述"
+msgstr "Описание"
+
+msgid "添加分类"
+msgstr "Добавить категорию"
+
+msgid "取消"
+msgstr "Отмена"
+
+msgid "Markdown语法帮助"
+msgstr "Справка по синтаксису Markdown"
+
+msgid "基本语法"
+msgstr "Базовый синтаксис"
+
+msgid "一级标题"
+msgstr "Заголовок 1"
+
+msgid "二级标题"
+msgstr "Заголовок 2"
+
+msgid "粗体文本"
+msgstr "Жирный текст"
+
+msgid "斜体文本"
+msgstr "Курсивный текст"
+
+msgid "创建链接"
+msgstr "Создать ссылку"
+
+msgid "内联代码"
+msgstr "Встроенный код"
+
+msgid "块引用"
+msgstr "Блочная цитата"
+
+msgid "无序列表"
+msgstr "Неупорядоченный список"
+
+msgid "有序列表"
+msgstr "Упорядоченный список" 

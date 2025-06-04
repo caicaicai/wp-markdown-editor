@@ -1,0 +1,282 @@
+# WordPress Markdown Editor - German Translation
+# Copyright (C) 2024 WordPress Markdown Editor
+msgid ""
+msgstr ""
+"Project-Id-Version: WordPress Markdown Editor 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/caicaicai/wp-markdown-editor\n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"PO-Revision-Date: 2024-01-01 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Markdown 编辑器"
+msgstr "Markdown Editor"
+
+msgid "新建文章"
+msgstr "Neuer Beitrag"
+
+msgid "文章列表"
+msgstr "Beiträge"
+
+msgid "安全验证失败"
+msgstr "Sicherheitsüberprüfung fehlgeschlagen"
+
+msgid "权限不足"
+msgstr "Unzureichende Berechtigungen"
+
+msgid "文章保存成功"
+msgstr "Beitrag erfolgreich gespeichert"
+
+msgid "文章保存失败"
+msgstr "Fehler beim Speichern des Beitrags"
+
+msgid "您没有权限编辑此文章"
+msgstr "Sie haben keine Berechtigung, diesen Beitrag zu bearbeiten"
+
+msgid "文章不存在或权限不足"
+msgstr "Beitrag existiert nicht oder unzureichende Berechtigungen"
+
+msgid "您没有权限创建分类"
+msgstr "Sie haben keine Berechtigung, Kategorien zu erstellen"
+
+msgid "分类名称不能为空"
+msgstr "Kategoriename darf nicht leer sein"
+
+msgid "分类名称已存在"
+msgstr "Kategoriename existiert bereits"
+
+msgid "父级分类不存在"
+msgstr "Übergeordnete Kategorie existiert nicht"
+
+msgid "分类创建失败: "
+msgstr "Fehler beim Erstellen der Kategorie: "
+
+msgid "分类创建成功"
+msgstr "Kategorie erfolgreich erstellt"
+
+msgid "您没有权限上传文件"
+msgstr "Sie haben keine Berechtigung, Dateien hochzuladen"
+
+msgid "没有选择文件"
+msgstr "Keine Datei ausgewählt"
+
+msgid "不支持的文件类型"
+msgstr "Nicht unterstützter Dateityp"
+
+msgid "文件大小超过限制"
+msgstr "Dateigröße überschreitet das Limit"
+
+msgid "附件创建失败"
+msgstr "Fehler beim Erstellen des Anhangs"
+
+msgid "图片上传成功"
+msgstr "Bild erfolgreich hochgeladen"
+
+msgid "保存中..."
+msgstr "Speichern..."
+
+msgid "已保存"
+msgstr "Gespeichert"
+
+msgid "保存失败"
+msgstr "Speichern fehlgeschlagen"
+
+msgid "选择图片"
+msgstr "Bild Auswählen"
+
+msgid "插入图片"
+msgstr "Bild Einfügen"
+
+msgid "上传图片"
+msgstr "Bild Hochladen"
+
+msgid "用Markdown编辑器编辑"
+msgstr "Mit Markdown Editor bearbeiten"
+
+msgid "Markdown编辑"
+msgstr "Markdown Bearbeitung"
+
+msgid "此文章使用Markdown编辑器创建"
+msgstr "Dieser Beitrag wurde mit dem Markdown Editor erstellt"
+
+msgid "新建Markdown文章"
+msgstr "Neuer Markdown Beitrag"
+
+msgid "编辑Markdown文章"
+msgstr "Markdown Beitrag bearbeiten"
+
+msgid "在此输入标题"
+msgstr "Titel hier eingeben"
+
+msgid "状态:"
+msgstr "Status:"
+
+msgid "草稿"
+msgstr "Entwurf"
+
+msgid "发布"
+msgstr "Veröffentlicht"
+
+msgid "私有"
+msgstr "Privat"
+
+msgid "保存草稿"
+msgstr "Entwurf Speichern"
+
+msgid "更新"
+msgstr "Aktualisieren"
+
+msgid "分类"
+msgstr "Kategorien"
+
+msgid "新建"
+msgstr "Neu"
+
+msgid "暂无分类"
+msgstr "Keine Kategorien"
+
+msgid "标签"
+msgstr "Schlagwörter"
+
+msgid "输入标签，用逗号分隔"
+msgstr "Schlagwörter eingeben, durch Kommas getrennt"
+
+msgid "多个标签用逗号分隔"
+msgstr "Mehrere Schlagwörter durch Kommas trennen"
+
+msgid "常用标签:"
+msgstr "Beliebte Schlagwörter:"
+
+msgid "图片"
+msgstr "Bilder"
+
+msgid "媒体库"
+msgstr "Mediathek"
+
+msgid "插入图片链接"
+msgstr "Bild-URL Einfügen"
+
+msgid "支持拖拽图片到编辑器区域快速插入"
+msgstr "Ziehen Sie Bilder in den Editor für schnelles Einfügen"
+
+msgid "快捷键:"
+msgstr "Tastenkürzel:"
+
+msgid "统计信息"
+msgstr "Statistiken"
+
+msgid "字数"
+msgstr "Wörter"
+
+msgid "行数"
+msgstr "Zeilen"
+
+msgid "字符"
+msgstr "Zeichen"
+
+msgid "段落"
+msgstr "Absätze"
+
+msgid "编写"
+msgstr "Schreiben"
+
+msgid "预览"
+msgstr "Vorschau"
+
+msgid "分屏"
+msgstr "Geteilte Ansicht"
+
+msgid "粗体"
+msgstr "Fett"
+
+msgid "斜体"
+msgstr "Kursiv"
+
+msgid "标题"
+msgstr "Überschrift"
+
+msgid "链接"
+msgstr "Link"
+
+msgid "代码"
+msgstr "Code"
+
+msgid "引用"
+msgstr "Zitat"
+
+msgid "列表"
+msgstr "Liste"
+
+msgid "在此输入Markdown内容..."
+msgstr "Markdown Inhalt hier eingeben..."
+
+msgid "预览将在这里显示..."
+msgstr "Vorschau wird hier angezeigt..."
+
+msgid "字"
+msgstr "Wörter"
+
+msgid "新建分类"
+msgstr "Neue Kategorie"
+
+msgid "分类名称"
+msgstr "Kategoriename"
+
+msgid "别名"
+msgstr "Titelform"
+
+msgid "别名是在URL中使用的版本，通常为小写，只包含字母、数字和连字符。"
+msgstr "Die Titelform ist die URL-freundliche Version des Namens. Sie ist normalerweise kleingeschrieben und enthält nur Buchstaben, Zahlen und Bindestriche."
+
+msgid "父级分类"
+msgstr "Übergeordnete Kategorie"
+
+msgid "无（顶级分类）"
+msgstr "Keine (Oberste Ebene)"
+
+msgid "描述"
+msgstr "Beschreibung"
+
+msgid "添加分类"
+msgstr "Kategorie Hinzufügen"
+
+msgid "取消"
+msgstr "Abbrechen"
+
+msgid "Markdown语法帮助"
+msgstr "Markdown Syntax Hilfe"
+
+msgid "基本语法"
+msgstr "Grundlegende Syntax"
+
+msgid "一级标题"
+msgstr "Überschrift 1"
+
+msgid "二级标题"
+msgstr "Überschrift 2"
+
+msgid "粗体文本"
+msgstr "Fetter Text"
+
+msgid "斜体文本"
+msgstr "Kursiver Text"
+
+msgid "创建链接"
+msgstr "Link erstellen"
+
+msgid "内联代码"
+msgstr "Inline Code"
+
+msgid "块引用"
+msgstr "Blockzitat"
+
+msgid "无序列表"
+msgstr "Ungeordnete Liste"
+
+msgid "有序列表"
+msgstr "Geordnete Liste" 

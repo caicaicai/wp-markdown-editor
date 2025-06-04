@@ -1,0 +1,282 @@
+# WordPress Markdown Editor - Japanese Translation
+# Copyright (C) 2024 WordPress Markdown Editor
+msgid ""
+msgstr ""
+"Project-Id-Version: WordPress Markdown Editor 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/caicaicai/wp-markdown-editor\n"
+"POT-Creation-Date: 2024-01-01 12:00+0000\n"
+"PO-Revision-Date: 2024-01-01 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Markdown 编辑器"
+msgstr "Markdownエディター"
+
+msgid "新建文章"
+msgstr "新規投稿"
+
+msgid "文章列表"
+msgstr "投稿一覧"
+
+msgid "安全验证失败"
+msgstr "セキュリティ検証に失敗しました"
+
+msgid "权限不足"
+msgstr "権限が不足しています"
+
+msgid "文章保存成功"
+msgstr "投稿の保存に成功しました"
+
+msgid "文章保存失败"
+msgstr "投稿の保存に失敗しました"
+
+msgid "您没有权限编辑此文章"
+msgstr "この投稿を編集する権限がありません"
+
+msgid "文章不存在或权限不足"
+msgstr "投稿が存在しないか、権限が不足しています"
+
+msgid "您没有权限创建分类"
+msgstr "カテゴリーを作成する権限がありません"
+
+msgid "分类名称不能为空"
+msgstr "カテゴリー名は空にできません"
+
+msgid "分类名称已存在"
+msgstr "カテゴリー名は既に存在します"
+
+msgid "父级分类不存在"
+msgstr "親カテゴリーが存在しません"
+
+msgid "分类创建失败: "
+msgstr "カテゴリーの作成に失敗しました："
+
+msgid "分类创建成功"
+msgstr "カテゴリーの作成に成功しました"
+
+msgid "您没有权限上传文件"
+msgstr "ファイルをアップロードする権限がありません"
+
+msgid "没有选择文件"
+msgstr "ファイルが選択されていません"
+
+msgid "不支持的文件类型"
+msgstr "サポートされていないファイル形式です"
+
+msgid "文件大小超过限制"
+msgstr "ファイルサイズが制限を超えています"
+
+msgid "附件创建失败"
+msgstr "添付ファイルの作成に失敗しました"
+
+msgid "图片上传成功"
+msgstr "画像のアップロードに成功しました"
+
+msgid "保存中..."
+msgstr "保存中..."
+
+msgid "已保存"
+msgstr "保存済み"
+
+msgid "保存失败"
+msgstr "保存に失敗しました"
+
+msgid "选择图片"
+msgstr "画像を選択"
+
+msgid "插入图片"
+msgstr "画像を挿入"
+
+msgid "上传图片"
+msgstr "画像をアップロード"
+
+msgid "用Markdown编辑器编辑"
+msgstr "Markdownエディターで編集"
+
+msgid "Markdown编辑"
+msgstr "Markdown編集"
+
+msgid "此文章使用Markdown编辑器创建"
+msgstr "この投稿はMarkdownエディターで作成されました"
+
+msgid "新建Markdown文章"
+msgstr "新規Markdown投稿"
+
+msgid "编辑Markdown文章"
+msgstr "Markdown投稿を編集"
+
+msgid "在此输入标题"
+msgstr "ここにタイトルを入力"
+
+msgid "状态:"
+msgstr "ステータス："
+
+msgid "草稿"
+msgstr "下書き"
+
+msgid "发布"
+msgstr "公開"
+
+msgid "私有"
+msgstr "非公開"
+
+msgid "保存草稿"
+msgstr "下書きを保存"
+
+msgid "更新"
+msgstr "更新"
+
+msgid "分类"
+msgstr "カテゴリー"
+
+msgid "新建"
+msgstr "新規"
+
+msgid "暂无分类"
+msgstr "カテゴリーがありません"
+
+msgid "标签"
+msgstr "タグ"
+
+msgid "输入标签，用逗号分隔"
+msgstr "タグをカンマ区切りで入力"
+
+msgid "多个标签用逗号分隔"
+msgstr "複数のタグはカンマで区切ってください"
+
+msgid "常用标签:"
+msgstr "よく使われるタグ："
+
+msgid "图片"
+msgstr "画像"
+
+msgid "媒体库"
+msgstr "メディアライブラリ"
+
+msgid "插入图片链接"
+msgstr "画像リンクを挿入"
+
+msgid "支持拖拽图片到编辑器区域快速插入"
+msgstr "エディター領域に画像をドラッグ&ドロップして素早く挿入"
+
+msgid "快捷键:"
+msgstr "ショートカット："
+
+msgid "统计信息"
+msgstr "統計情報"
+
+msgid "字数"
+msgstr "文字数"
+
+msgid "行数"
+msgstr "行数"
+
+msgid "字符"
+msgstr "文字"
+
+msgid "段落"
+msgstr "段落"
+
+msgid "编写"
+msgstr "書く"
+
+msgid "预览"
+msgstr "プレビュー"
+
+msgid "分屏"
+msgstr "分割表示"
+
+msgid "粗体"
+msgstr "太字"
+
+msgid "斜体"
+msgstr "斜体"
+
+msgid "标题"
+msgstr "見出し"
+
+msgid "链接"
+msgstr "リンク"
+
+msgid "代码"
+msgstr "コード"
+
+msgid "引用"
+msgstr "引用"
+
+msgid "列表"
+msgstr "リスト"
+
+msgid "在此输入Markdown内容..."
+msgstr "ここにMarkdownコンテンツを入力..."
+
+msgid "预览将在这里显示..."
+msgstr "プレビューがここに表示されます..."
+
+msgid "字"
+msgstr "文字"
+
+msgid "新建分类"
+msgstr "新規カテゴリー"
+
+msgid "分类名称"
+msgstr "カテゴリー名"
+
+msgid "别名"
+msgstr "スラッグ"
+
+msgid "别名是在URL中使用的版本，通常为小写，只包含字母、数字和连字符。"
+msgstr "スラッグはURLで使用されるバージョンです。通常は小文字で、文字、数字、ハイフンのみを含みます。"
+
+msgid "父级分类"
+msgstr "親カテゴリー"
+
+msgid "无（顶级分类）"
+msgstr "なし（トップレベル）"
+
+msgid "描述"
+msgstr "説明"
+
+msgid "添加分类"
+msgstr "カテゴリーを追加"
+
+msgid "取消"
+msgstr "キャンセル"
+
+msgid "Markdown语法帮助"
+msgstr "Markdown構文ヘルプ"
+
+msgid "基本语法"
+msgstr "基本構文"
+
+msgid "一级标题"
+msgstr "見出し1"
+
+msgid "二级标题"
+msgstr "見出し2"
+
+msgid "粗体文本"
+msgstr "太字テキスト"
+
+msgid "斜体文本"
+msgstr "斜体テキスト"
+
+msgid "创建链接"
+msgstr "リンクを作成"
+
+msgid "内联代码"
+msgstr "インラインコード"
+
+msgid "块引用"
+msgstr "ブロック引用"
+
+msgid "无序列表"
+msgstr "順序なしリスト"
+
+msgid "有序列表"
+msgstr "順序付きリスト" 
