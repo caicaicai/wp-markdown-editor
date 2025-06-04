@@ -1,0 +1,146 @@
+# WordPress插件开发 .gitignore
+
+# WordPress核心文件（如果在WordPress环境中开发时忽略）
+/wordpress/
+/wp-admin/
+/wp-includes/
+/wp-content/
+wp-*.php
+xmlrpc.php
+.htaccess
+
+# WordPress配置文件
+wp-config.php
+wp-config-sample.php
+
+# 数据库文件
+*.sql
+*.sql.gz
+*.sql.bz2
+
+# WordPress调试和错误日志
+debug.log
+error_log
+access.log
+*.log
+
+# 缓存文件
+/cache/
+/tmp/
+*.tmp
+
+# 备份文件
+*.bak
+*.backup
+*~
+*.swp
+*.swo
+
+# 依赖管理
+/node_modules/
+/vendor/
+composer.lock
+package-lock.json
+yarn.lock
+
+# 构建和编译文件
+/build/
+/dist/
+/release/
+*.min.js
+*.min.css
+*.map
+
+# 开发工具配置
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.atom/
+.brackets.json
+
+# 系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Git相关
+.git/
+*.orig
+
+# 环境变量文件
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# 临时文件
+*.tmp
+*.temp
+*~
+
+# 文档生成
+/docs/
+/documentation/
+
+# 测试相关
+/tests/coverage/
+phpunit.xml
+.phpunit.result.cache
+
+# 压缩文件
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# 本地开发配置
+local-config.php
+wp-config-local.php
+
+# PHP相关
+*.php~
+.phpintel/
+
+# 编辑器和IDE
+*.sublime-project
+*.sublime-workspace
+.project
+.buildpath
+.settings/
+
+# Mac相关
+.AppleDouble
+.LSOverride
+Icon
+
+# Windows相关
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Linux相关
+*~
+.nfs*
+
+# 插件特定忽略
+/languages/*.pot
+/languages/*.po~
+
+# 安全相关
+*.pem
+*.key
+*.crt
+*.p12
+
+# 本项目特定
+# 如果你有特定的开发工具或临时文件，可以在这里添加 
