@@ -6,6 +6,8 @@
 /wp-includes/
 /wp-content/
 wp-*.php
+# 但允许我们的主插件文件
+!wp-markdown-editor.php
 xmlrpc.php
 .htaccess
 
