@@ -1,6 +1,6 @@
 <?php
 /**
- * Markdown编辑器模�?
+ * Markdown编辑器模板
  */
 
 // 防止直接访问
@@ -8,32 +8,49 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// 获取文章ID
 $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
 
 // 验证nonce用于编辑现有文章
 if ($post_id && (!isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'edit_markdown_post_' . $post_id))) {
     wp_die(__('安全验证失败', 'advanced-markdown-editor'));
 }
-$is_new_post = !$post_id;
+
+$is_new_post = $post_id === 0;
+
+// 获取文章数据
+$post_data = array();
 $post_title = '';
-$markdown_content = '';
+$post_content = '';
 $post_status = 'draft';
 $post_categories = array();
 $post_tags = array();
 
 if (!$is_new_post) {
     $post = get_post($post_id);
-    $post_title = $post->post_title;
-    $markdown_content = get_post_meta($post_id, '_markdown_content', true);
-    if (!$markdown_content) {
-        // 如果没有Markdown内容，尝试从HTML内容中获�?
-        $markdown_content = $post->post_content;
+    if ($post) {
+        $post_title = $post->post_title;
+        $markdown_content = get_post_meta($post_id, '_markdown_content', true);
+        
+        // 如果没有Markdown内容，尝试从HTML内容中获取
+        if (empty($markdown_content)) {
+            $post_content = $post->post_content;
+        } else {
+            $post_content = $markdown_content;
+        }
+        
+        $post_status = $post->post_status;
+        
+        // 获取分类
+        $categories = wp_get_post_categories($post_id);
+        $post_categories = $categories;
+        
+        // 获取标签
+        $tags = wp_get_post_tags($post_id);
+        $post_tags = array_map(function($tag) {
+            return $tag->term_id;
+        }, $tags);
     }
-    $post_status = $post->post_status;
-    
-    // 获取文章的分类和标签
-    $post_categories = wp_get_post_categories($post_id);
-    $post_tags = wp_get_post_tags($post_id, array('fields' => 'ids'));
 }
 
 // 获取所有可用的分类
@@ -84,7 +101,7 @@ $tags = get_tags(array(
             
             <div class="editor-actions">
                 <div class="status-section">
-                    <label for="post-status"><?php esc_html_e('状�?', 'advanced-markdown-editor'); ?></label>
+                    <label for="post-status"><?php esc_html_e('状态', 'advanced-markdown-editor'); ?></label>
                     <select id="post-status" name="post_status">
                         <option value="draft" <?php selected($post_status, 'draft'); ?>><?php esc_html_e('草稿', 'advanced-markdown-editor'); ?></option>
                         <option value="publish" <?php selected($post_status, 'publish'); ?>><?php esc_html_e('发布', 'advanced-markdown-editor'); ?></option>
@@ -104,7 +121,7 @@ $tags = get_tags(array(
         </div>
         
         <div class="editor-main">
-            <!-- 主编辑区�?-->
+            <!-- 主编辑区 -->
             <div class="editor-main-content">
                 <div class="editor-tabs">
                     <button type="button" class="tab-button active" data-tab="write">
@@ -152,7 +169,7 @@ $tags = get_tags(array(
                         
                         <textarea id="markdown-editor" 
                                   name="markdown_content" 
-                                  placeholder="<?php esc_html_e('在此输入Markdown内容...', 'advanced-markdown-editor'); ?>"><?php echo esc_textarea($markdown_content); ?></textarea>
+                                  placeholder="<?php esc_html_e('在此输入Markdown内容...', 'advanced-markdown-editor'); ?>"><?php echo esc_textarea($post_content); ?></textarea>
                     </div>
                     
                     <div class="editor-pane preview-pane">
@@ -167,16 +184,16 @@ $tags = get_tags(array(
                         <span id="save-status"></span>
                     </div>
                     <div class="editor-info">
-                        <span id="word-count">0 <?php esc_html_e('�?, 'advanced-markdown-editor'); ?></span>
+                        <span id="word-count">0 <?php esc_html_e('字', 'advanced-markdown-editor'); ?></span>
                         <span class="separator">|</span>
-                        <span id="line-count">0 <?php esc_html_e('�?, 'advanced-markdown-editor'); ?></span>
+                        <span id="line-count">0 <?php esc_html_e('行', 'advanced-markdown-editor'); ?></span>
                     </div>
                 </div>
             </div>
             
             <!-- 右侧边栏 -->
             <div class="editor-sidebar">
-                <!-- 发布状态卡�?-->
+                <!-- 发布状态卡片 -->
                 <div class="sidebar-card">
                     <div class="card-header">
                         <h3><?php esc_html_e('发布', 'advanced-markdown-editor'); ?></h3>
@@ -192,7 +209,7 @@ $tags = get_tags(array(
                         </div>
                         <div class="publish-info">
                             <div class="info-item">
-                                <label for="post-status-sidebar"><?php esc_html_e('状�?', 'advanced-markdown-editor'); ?></label>
+                                <label for="post-status-sidebar"><?php esc_html_e('状态', 'advanced-markdown-editor'); ?></label>
                                 <select id="post-status-sidebar" name="post_status">
                                     <option value="draft" <?php selected($post_status, 'draft'); ?>><?php esc_html_e('草稿', 'advanced-markdown-editor'); ?></option>
                                     <option value="publish" <?php selected($post_status, 'publish'); ?>><?php esc_html_e('发布', 'advanced-markdown-editor'); ?></option>
@@ -215,7 +232,7 @@ $tags = get_tags(array(
                         <div class="categories-tree">
                             <?php if (!empty($categories)): ?>
                                 <?php
-                                // 构建分类�?
+                                // 构建分类树
                                 function advamaed_build_category_tree($categories, $parent_id = 0, $post_categories = array(), $level = 0) {
                                     $tree = '';
                                     foreach ($categories as $category) {
@@ -227,7 +244,7 @@ $tags = get_tags(array(
                                             $tree .= '<span class="category-name">' . esc_html($category->name) . '</span>';
                                             $tree .= '</label>';
                                             
-                                            // 递归显示子分�?
+                                            // 递归显示子分类
                                             $children = advamaed_build_category_tree($categories, $category->term_id, $post_categories, $level + 1);
                                             if ($children) {
                                                 $tree .= '<div class="category-children">' . $children . '</div>';
@@ -239,7 +256,7 @@ $tags = get_tags(array(
                                     return $tree;
                                 }
                                 
-                                                                  echo advamaed_build_category_tree($categories, 0, $post_categories);
+                                echo advamaed_build_category_tree($categories, 0, $post_categories);
                                 ?>
                             <?php else: ?>
                                 <p class="no-items"><?php esc_html_e('暂无分类', 'advanced-markdown-editor'); ?></p>
@@ -295,7 +312,7 @@ $tags = get_tags(array(
                     <div class="card-header">
                         <h3><?php esc_html_e('图片', 'advanced-markdown-editor'); ?></h3>
                         <button type="button" class="button button-small" id="open-media-library">
-                            <?php esc_html_e('媒体�?, 'advanced-markdown-editor'); ?>
+                            <?php esc_html_e('媒体库', 'advanced-markdown-editor'); ?>
                         </button>
                     </div>
                     <div class="card-content">
@@ -311,10 +328,10 @@ $tags = get_tags(array(
                         </div>
                         <div class="image-tips">
                             <p class="description">
-                                <?php esc_html_e('支持拖拽图片到编辑器区域快速插�?, 'advanced-markdown-editor'); ?>
+                                <?php esc_html_e('支持拖拽图片到编辑器区域快速插入', 'advanced-markdown-editor'); ?>
                             </p>
                             <p class="description">
-                                <strong><?php esc_html_e('快捷�?', 'advanced-markdown-editor'); ?></strong>
+                                <strong><?php esc_html_e('快捷键', 'advanced-markdown-editor'); ?></strong>
                                 Ctrl+U <?php esc_html_e('上传图片', 'advanced-markdown-editor'); ?>
                             </p>
                         </div>
@@ -371,48 +388,32 @@ $tags = get_tags(array(
         </div>
         <div class="modal-body">
             <form id="new-category-form">
-                <table class="form-table">
-                    <tr>
-                        <th scope="row">
-                            <label for="new-category-name"><?php esc_html_e('分类名称', 'advanced-markdown-editor'); ?></label>
-                        </th>
-                        <td>
-                            <input type="text" id="new-category-name" name="category_name" class="regular-text" required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            <label for="new-category-slug"><?php esc_html_e('别名', 'advanced-markdown-editor'); ?></label>
-                        </th>
-                        <td>
-                            <input type="text" id="new-category-slug" name="category_slug" class="regular-text">
-                            <p class="description"><?php esc_html_e('别名是在URL中使用的版本，通常为小写，只包含字母、数字和连字符�?, 'advanced-markdown-editor'); ?></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            <label for="new-category-parent"><?php esc_html_e('父级分类', 'advanced-markdown-editor'); ?></label>
-                        </th>
-                        <td>
-                            <select id="new-category-parent" name="category_parent">
-                                <option value="0"><?php esc_html_e('无（顶级分类�?, 'advanced-markdown-editor'); ?></option>
-                                <?php foreach ($categories as $category): ?>
-                                    <option value="<?php echo $category->term_id; ?>">
-                                        <?php echo esc_html($category->name); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            <label for="new-category-description"><?php esc_html_e('描述', 'advanced-markdown-editor'); ?></label>
-                        </th>
-                        <td>
-                            <textarea id="new-category-description" name="category_description" rows="3" class="large-text"></textarea>
-                        </td>
-                    </tr>
-                </table>
+                <div class="form-group">
+                    <label for="category-name"><?php esc_html_e('分类名称', 'advanced-markdown-editor'); ?></label>
+                    <input type="text" id="category-name" name="category_name" class="regular-text" required>
+                </div>
+                <div class="form-group">
+                    <label for="category-slug"><?php esc_html_e('别名', 'advanced-markdown-editor'); ?></label>
+                    <input type="text" id="category-slug" name="category_slug" class="regular-text">
+                    <p class="description"><?php esc_html_e('别名是在URL中使用的版本，通常为小写，只包含字母、数字和连字符。', 'advanced-markdown-editor'); ?></p>
+                </div>
+                <div class="form-group">
+                    <label for="category-parent"><?php esc_html_e('父级分类', 'advanced-markdown-editor'); ?></label>
+                    <select id="category-parent" name="category_parent">
+                        <option value="0"><?php esc_html_e('无（顶级分类）', 'advanced-markdown-editor'); ?></option>
+                        <?php
+                        $categories = get_categories(array('hide_empty' => false));
+                        foreach ($categories as $category) {
+                            echo '<option value="' . $category->term_id . '">' . esc_html($category->name) . '</option>';
+                        }
+                        ?>
+                    </select>
+                    <p class="description"><?php esc_html_e('别名是在URL中使用的版本，通常为小写，只包含字母、数字和连字符。', 'advanced-markdown-editor'); ?></p>
+                </div>
+                <div class="form-group">
+                    <label for="category-description"><?php esc_html_e('描述', 'advanced-markdown-editor'); ?></label>
+                    <textarea id="category-description" name="category_description" rows="3" class="large-text"></textarea>
+                </div>
                 <p class="submit">
                     <button type="submit" class="button button-primary"><?php esc_html_e('添加分类', 'advanced-markdown-editor'); ?></button>
                     <button type="button" class="button modal-close"><?php esc_html_e('取消', 'advanced-markdown-editor'); ?></button>
@@ -435,7 +436,7 @@ $tags = get_tags(array(
                 <table class="help-table">
                     <tr>
                         <td><code># 标题 1</code></td>
-                        <td><?php esc_html_e('一级标�?, 'advanced-markdown-editor'); ?></td>
+                        <td><?php esc_html_e('一级标题', 'advanced-markdown-editor'); ?></td>
                     </tr>
                     <tr>
                         <td><code>## 标题 2</code></td>
@@ -463,14 +464,14 @@ $tags = get_tags(array(
                     </tr>
                     <tr>
                         <td><code>> 引用</code></td>
-                        <td><?php esc_html_e('块引�?, 'advanced-markdown-editor'); ?></td>
+                        <td><?php esc_html_e('块引用', 'advanced-markdown-editor'); ?></td>
                     </tr>
                     <tr>
-                        <td><code>- 列表�?/code></td>
+                        <td><code>- 列表</code></td>
                         <td><?php esc_html_e('无序列表', 'advanced-markdown-editor'); ?></td>
                     </tr>
                     <tr>
-                        <td><code>1. 列表�?/code></td>
+                        <td><code>1. 列表</code></td>
                         <td><?php esc_html_e('有序列表', 'advanced-markdown-editor'); ?></td>
                     </tr>
                 </table>

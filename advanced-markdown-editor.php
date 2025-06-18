@@ -178,7 +178,7 @@ class ADVAMAED_Markdown_Editor {
                     // 加载 Marked.js 用于Markdown解析 (本地版本)
                     wp_enqueue_script(
                 'advanced-markdown-editor-marked',
-                ADVAMAED_PLUGIN_URL . 'assets/js/marked.mini.js',
+                ADVAMAED_PLUGIN_URL . 'assets/js/marked.min.js',
                 array(),
                 ADVAMAED_VERSION,
                 true
@@ -559,7 +559,7 @@ class ADVAMAED_Markdown_Editor {
     public function add_meta_boxes() {
         add_meta_box(
             'markdown-editor-meta',
-            __('Markdown 编辑器', 'advanced-markdown-editor'),
+            esc_html__('Markdown 编辑器', 'advanced-markdown-editor'),
             array($this, 'markdown_meta_box_callback'),
             array('post', 'page'),
             'side',
@@ -576,9 +576,9 @@ class ADVAMAED_Markdown_Editor {
         
         echo '<p>';
         if ($is_markdown) {
-            echo '<strong>' . __('此文章使用Markdown编辑器创建', 'advanced-markdown-editor') . '</strong><br>';
+            echo '<strong>' . esc_html__('此文章使用Markdown编辑器创建', 'advanced-markdown-editor') . '</strong><br>';
         }
-        echo '<a href="' . esc_url($edit_link) . '" class="button">' . __('用Markdown编辑器编辑', 'advanced-markdown-editor') . '</a>';
+        echo '<a href="' . esc_url($edit_link) . '" class="button">' . esc_html__('用Markdown编辑器编辑', 'advanced-markdown-editor') . '</a>';
         echo '</p>';
     }
     
@@ -595,7 +595,7 @@ class ADVAMAED_Markdown_Editor {
     public function add_markdown_edit_link($actions, $post) {
         if (current_user_can('edit_post', $post->ID)) {
             $markdown_edit_link = admin_url('admin.php?page=wp-markdown-editor&post=' . $post->ID);
-            $actions['markdown_edit'] = '<a href="' . esc_url($markdown_edit_link) . '">' . __('Markdown编辑', 'advanced-markdown-editor') . '</a>';
+            $actions['markdown_edit'] = '<a href="' . esc_url($markdown_edit_link) . '">' . esc_html__('Markdown编辑', 'advanced-markdown-editor') . '</a>';
         }
         return $actions;
     }
