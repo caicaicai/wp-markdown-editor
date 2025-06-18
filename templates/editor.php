@@ -1,6 +1,6 @@
 <?php
 /**
- * Markdown编辑器模板
+ * Markdown编辑器模�?
  */
 
 // 防止直接访问
@@ -9,6 +9,11 @@ if (!defined('ABSPATH')) {
 }
 
 $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
+
+// 验证nonce用于编辑现有文章
+if ($post_id && (!isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'edit_markdown_post_' . $post_id))) {
+    wp_die(__('安全验证失败', 'advanced-markdown-editor'));
+}
 $is_new_post = !$post_id;
 $post_title = '';
 $markdown_content = '';
@@ -21,7 +26,7 @@ if (!$is_new_post) {
     $post_title = $post->post_title;
     $markdown_content = get_post_meta($post_id, '_markdown_content', true);
     if (!$markdown_content) {
-        // 如果没有Markdown内容，尝试从HTML内容中获取
+        // 如果没有Markdown内容，尝试从HTML内容中获�?
         $markdown_content = $post->post_content;
     }
     $post_status = $post->post_status;
@@ -49,15 +54,15 @@ $tags = get_tags(array(
 <div class="wrap">
     <h1 class="wp-heading-inline">
         <?php if ($is_new_post): ?>
-            <?php _e('新建Markdown文章', 'advanced-markdown-editor'); ?>
+            <?php esc_html_e('新建Markdown文章', 'advanced-markdown-editor'); ?>
         <?php else: ?>
-            <?php _e('编辑Markdown文章', 'advanced-markdown-editor'); ?>
+            <?php esc_html_e('编辑Markdown文章', 'advanced-markdown-editor'); ?>
         <?php endif; ?>
     </h1>
     
     <?php if (!$is_new_post): ?>
     <a href="<?php echo admin_url('admin.php?page=advanced-markdown-editor'); ?>" class="page-title-action">
-        <?php _e('新建文章', 'advanced-markdown-editor'); ?>
+        <?php esc_html_e('新建文章', 'advanced-markdown-editor'); ?>
     </a>
     <?php endif; ?>
     
@@ -73,86 +78,86 @@ $tags = get_tags(array(
                        id="post-title" 
                        name="post_title" 
                        value="<?php echo esc_attr($post_title); ?>" 
-                       placeholder="<?php _e('在此输入标题', 'advanced-markdown-editor'); ?>"
+                       placeholder="<?php esc_attr_e('在此输入标题', 'advanced-markdown-editor'); ?>"
                        class="widefat">
             </div>
             
             <div class="editor-actions">
                 <div class="status-section">
-                    <label for="post-status"><?php _e('状态:', 'advanced-markdown-editor'); ?></label>
+                    <label for="post-status"><?php esc_html_e('状�?', 'advanced-markdown-editor'); ?></label>
                     <select id="post-status" name="post_status">
-                        <option value="draft" <?php selected($post_status, 'draft'); ?>><?php _e('草稿', 'advanced-markdown-editor'); ?></option>
-                        <option value="publish" <?php selected($post_status, 'publish'); ?>><?php _e('发布', 'advanced-markdown-editor'); ?></option>
-                        <option value="private" <?php selected($post_status, 'private'); ?>><?php _e('私有', 'advanced-markdown-editor'); ?></option>
+                        <option value="draft" <?php selected($post_status, 'draft'); ?>><?php esc_html_e('草稿', 'advanced-markdown-editor'); ?></option>
+                        <option value="publish" <?php selected($post_status, 'publish'); ?>><?php esc_html_e('发布', 'advanced-markdown-editor'); ?></option>
+                        <option value="private" <?php selected($post_status, 'private'); ?>><?php esc_html_e('私有', 'advanced-markdown-editor'); ?></option>
                     </select>
                 </div>
                 
                 <div class="save-section">
                     <button type="button" id="save-draft" class="button">
-                        <?php _e('保存草稿', 'advanced-markdown-editor'); ?>
+                        <?php esc_html_e('保存草稿', 'advanced-markdown-editor'); ?>
                     </button>
                     <button type="button" id="publish-post" class="button button-primary">
-                        <?php echo (($post_status === 'publish' || $post_status === 'private') && !$is_new_post) ? __('更新', 'advanced-markdown-editor') : __('发布', 'advanced-markdown-editor'); ?>
+                        <?php echo (($post_status === 'publish' || $post_status === 'private') && !$is_new_post) ? esc_html__('更新', 'advanced-markdown-editor') : esc_html__('发布', 'advanced-markdown-editor'); ?>
                     </button>
                 </div>
             </div>
         </div>
         
         <div class="editor-main">
-            <!-- 主编辑区域 -->
+            <!-- 主编辑区�?-->
             <div class="editor-main-content">
                 <div class="editor-tabs">
                     <button type="button" class="tab-button active" data-tab="write">
-                        <?php _e('编写', 'advanced-markdown-editor'); ?>
+                        <?php esc_html_e('编写', 'advanced-markdown-editor'); ?>
                     </button>
                     <button type="button" class="tab-button" data-tab="preview">
-                        <?php _e('预览', 'advanced-markdown-editor'); ?>
+                        <?php esc_html_e('预览', 'advanced-markdown-editor'); ?>
                     </button>
                     <button type="button" class="tab-button" data-tab="split">
-                        <?php _e('分屏', 'advanced-markdown-editor'); ?>
+                        <?php esc_html_e('分屏', 'advanced-markdown-editor'); ?>
                     </button>
                 </div>
                 
                 <div class="editor-content">
                     <div class="editor-pane write-pane active">
                         <div class="toolbar">
-                            <button type="button" class="toolbar-button" data-action="bold" title="<?php _e('粗体', 'advanced-markdown-editor'); ?>">
+                            <button type="button" class="toolbar-button" data-action="bold" title="<?php esc_html_e('粗体', 'advanced-markdown-editor'); ?>">
                                 <span class="dashicons dashicons-editor-bold"></span>
                             </button>
-                            <button type="button" class="toolbar-button" data-action="italic" title="<?php _e('斜体', 'advanced-markdown-editor'); ?>">
+                            <button type="button" class="toolbar-button" data-action="italic" title="<?php esc_html_e('斜体', 'advanced-markdown-editor'); ?>">
                                 <span class="dashicons dashicons-editor-italic"></span>
                             </button>
-                            <button type="button" class="toolbar-button" data-action="heading" title="<?php _e('标题', 'advanced-markdown-editor'); ?>">
+                            <button type="button" class="toolbar-button" data-action="heading" title="<?php esc_html_e('标题', 'advanced-markdown-editor'); ?>">
                                 <span class="dashicons dashicons-heading"></span>
                             </button>
-                            <button type="button" class="toolbar-button" data-action="link" title="<?php _e('链接', 'advanced-markdown-editor'); ?>">
+                            <button type="button" class="toolbar-button" data-action="link" title="<?php esc_html_e('链接', 'advanced-markdown-editor'); ?>">
                                 <span class="dashicons dashicons-admin-links"></span>
                             </button>
-                            <button type="button" class="toolbar-button" data-action="media" title="<?php _e('上传图片', 'advanced-markdown-editor'); ?>">
+                            <button type="button" class="toolbar-button" data-action="media" title="<?php esc_html_e('上传图片', 'advanced-markdown-editor'); ?>">
                                 <span class="dashicons dashicons-admin-media"></span>
                             </button>
-                            <button type="button" class="toolbar-button" data-action="image" title="<?php _e('插入图片链接', 'advanced-markdown-editor'); ?>">
+                            <button type="button" class="toolbar-button" data-action="image" title="<?php esc_html_e('插入图片链接', 'advanced-markdown-editor'); ?>">
                                 <span class="dashicons dashicons-format-image"></span>
                             </button>
-                            <button type="button" class="toolbar-button" data-action="code" title="<?php _e('代码', 'advanced-markdown-editor'); ?>">
+                            <button type="button" class="toolbar-button" data-action="code" title="<?php esc_html_e('代码', 'advanced-markdown-editor'); ?>">
                                 <span class="dashicons dashicons-editor-code"></span>
                             </button>
-                            <button type="button" class="toolbar-button" data-action="quote" title="<?php _e('引用', 'advanced-markdown-editor'); ?>">
+                            <button type="button" class="toolbar-button" data-action="quote" title="<?php esc_html_e('引用', 'advanced-markdown-editor'); ?>">
                                 <span class="dashicons dashicons-editor-quote"></span>
                             </button>
-                            <button type="button" class="toolbar-button" data-action="list" title="<?php _e('列表', 'advanced-markdown-editor'); ?>">
+                            <button type="button" class="toolbar-button" data-action="list" title="<?php esc_html_e('列表', 'advanced-markdown-editor'); ?>">
                                 <span class="dashicons dashicons-editor-ul"></span>
                             </button>
                         </div>
                         
                         <textarea id="markdown-editor" 
                                   name="markdown_content" 
-                                  placeholder="<?php _e('在此输入Markdown内容...', 'advanced-markdown-editor'); ?>"><?php echo esc_textarea($markdown_content); ?></textarea>
+                                  placeholder="<?php esc_html_e('在此输入Markdown内容...', 'advanced-markdown-editor'); ?>"><?php echo esc_textarea($markdown_content); ?></textarea>
                     </div>
                     
                     <div class="editor-pane preview-pane">
                         <div class="preview-content" id="preview-content">
-                            <p class="no-content"><?php _e('预览将在这里显示...', 'advanced-markdown-editor'); ?></p>
+                            <p class="no-content"><?php esc_html_e('预览将在这里显示...', 'advanced-markdown-editor'); ?></p>
                         </div>
                     </div>
                 </div>
@@ -162,36 +167,36 @@ $tags = get_tags(array(
                         <span id="save-status"></span>
                     </div>
                     <div class="editor-info">
-                        <span id="word-count">0 <?php _e('字', 'advanced-markdown-editor'); ?></span>
+                        <span id="word-count">0 <?php esc_html_e('�?, 'advanced-markdown-editor'); ?></span>
                         <span class="separator">|</span>
-                        <span id="line-count">0 <?php _e('行', 'advanced-markdown-editor'); ?></span>
+                        <span id="line-count">0 <?php esc_html_e('�?, 'advanced-markdown-editor'); ?></span>
                     </div>
                 </div>
             </div>
             
             <!-- 右侧边栏 -->
             <div class="editor-sidebar">
-                <!-- 发布状态卡片 -->
+                <!-- 发布状态卡�?-->
                 <div class="sidebar-card">
                     <div class="card-header">
-                        <h3><?php _e('发布', 'advanced-markdown-editor'); ?></h3>
+                        <h3><?php esc_html_e('发布', 'advanced-markdown-editor'); ?></h3>
                     </div>
                     <div class="card-content">
                         <div class="publish-actions">
                             <button type="button" id="save-draft-sidebar" class="button button-large">
-                                <?php _e('保存草稿', 'advanced-markdown-editor'); ?>
+                                <?php esc_html_e('保存草稿', 'advanced-markdown-editor'); ?>
                             </button>
                             <button type="button" id="publish-post-sidebar" class="button button-primary button-large">
-                                <?php echo (($post_status === 'publish' || $post_status === 'private') && !$is_new_post) ? __('更新', 'advanced-markdown-editor') : __('发布', 'advanced-markdown-editor'); ?>
+                                <?php echo (($post_status === 'publish' || $post_status === 'private') && !$is_new_post) ? esc_html__('更新', 'advanced-markdown-editor') : esc_html__('发布', 'advanced-markdown-editor'); ?>
                             </button>
                         </div>
                         <div class="publish-info">
                             <div class="info-item">
-                                <label for="post-status-sidebar"><?php _e('状态:', 'advanced-markdown-editor'); ?></label>
+                                <label for="post-status-sidebar"><?php esc_html_e('状�?', 'advanced-markdown-editor'); ?></label>
                                 <select id="post-status-sidebar" name="post_status">
-                                    <option value="draft" <?php selected($post_status, 'draft'); ?>><?php _e('草稿', 'advanced-markdown-editor'); ?></option>
-                                    <option value="publish" <?php selected($post_status, 'publish'); ?>><?php _e('发布', 'advanced-markdown-editor'); ?></option>
-                                    <option value="private" <?php selected($post_status, 'private'); ?>><?php _e('私有', 'advanced-markdown-editor'); ?></option>
+                                    <option value="draft" <?php selected($post_status, 'draft'); ?>><?php esc_html_e('草稿', 'advanced-markdown-editor'); ?></option>
+                                    <option value="publish" <?php selected($post_status, 'publish'); ?>><?php esc_html_e('发布', 'advanced-markdown-editor'); ?></option>
+                                    <option value="private" <?php selected($post_status, 'private'); ?>><?php esc_html_e('私有', 'advanced-markdown-editor'); ?></option>
                                 </select>
                             </div>
                         </div>
@@ -201,17 +206,17 @@ $tags = get_tags(array(
                 <!-- 分类卡片 -->
                 <div class="sidebar-card">
                     <div class="card-header">
-                        <h3><?php _e('分类', 'advanced-markdown-editor'); ?></h3>
+                        <h3><?php esc_html_e('分类', 'advanced-markdown-editor'); ?></h3>
                         <button type="button" class="button button-small" id="add-new-category">
-                            <?php _e('新建', 'advanced-markdown-editor'); ?>
+                            <?php esc_html_e('新建', 'advanced-markdown-editor'); ?>
                         </button>
                     </div>
                     <div class="card-content">
                         <div class="categories-tree">
                             <?php if (!empty($categories)): ?>
                                 <?php
-                                // 构建分类树
-                                function build_category_tree($categories, $parent_id = 0, $post_categories = array(), $level = 0) {
+                                // 构建分类�?
+                                function advamaed_build_category_tree($categories, $parent_id = 0, $post_categories = array(), $level = 0) {
                                     $tree = '';
                                     foreach ($categories as $category) {
                                         if ($category->parent == $parent_id) {
@@ -222,8 +227,8 @@ $tags = get_tags(array(
                                             $tree .= '<span class="category-name">' . esc_html($category->name) . '</span>';
                                             $tree .= '</label>';
                                             
-                                            // 递归显示子分类
-                                            $children = build_category_tree($categories, $category->term_id, $post_categories, $level + 1);
+                                            // 递归显示子分�?
+                                            $children = advamaed_build_category_tree($categories, $category->term_id, $post_categories, $level + 1);
                                             if ($children) {
                                                 $tree .= '<div class="category-children">' . $children . '</div>';
                                             }
@@ -234,10 +239,10 @@ $tags = get_tags(array(
                                     return $tree;
                                 }
                                 
-                                echo build_category_tree($categories, 0, $post_categories);
+                                                                  echo advamaed_build_category_tree($categories, 0, $post_categories);
                                 ?>
                             <?php else: ?>
-                                <p class="no-items"><?php _e('暂无分类', 'advanced-markdown-editor'); ?></p>
+                                <p class="no-items"><?php esc_html_e('暂无分类', 'advanced-markdown-editor'); ?></p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -246,14 +251,14 @@ $tags = get_tags(array(
                 <!-- 标签卡片 -->
                 <div class="sidebar-card">
                     <div class="card-header">
-                        <h3><?php _e('标签', 'advanced-markdown-editor'); ?></h3>
+                        <h3><?php esc_html_e('标签', 'advanced-markdown-editor'); ?></h3>
                     </div>
                     <div class="card-content">
                         <div class="tags-input-wrapper">
                             <textarea id="post-tags" 
                                      name="post_tags" 
                                      rows="3"
-                                     placeholder="<?php _e('输入标签，用逗号分隔', 'advanced-markdown-editor'); ?>"><?php 
+                                     placeholder="<?php esc_html_e('输入标签，用逗号分隔', 'advanced-markdown-editor'); ?>"><?php 
                                 if (!empty($post_tags)) {
                                     $tag_names = array();
                                     foreach ($post_tags as $tag_id) {
@@ -267,12 +272,12 @@ $tags = get_tags(array(
                             ?></textarea>
                             <div class="tags-suggestions" id="tags-suggestions" style="display: none;"></div>
                         </div>
-                        <p class="description"><?php _e('多个标签用逗号分隔', 'advanced-markdown-editor'); ?></p>
+                        <p class="description"><?php esc_html_e('多个标签用逗号分隔', 'advanced-markdown-editor'); ?></p>
                         
                         <!-- 常用标签快速选择 -->
                         <?php if (!empty($tags)): ?>
                         <div class="popular-tags">
-                            <label class="tags-label"><?php _e('常用标签:', 'advanced-markdown-editor'); ?></label>
+                            <label class="tags-label"><?php esc_html_e('常用标签:', 'advanced-markdown-editor'); ?></label>
                             <div class="tags-cloud">
                                 <?php foreach (array_slice($tags, 0, 10) as $tag): ?>
                                     <button type="button" class="tag-cloud-item" data-tag="<?php echo esc_attr($tag->name); ?>">
@@ -288,29 +293,29 @@ $tags = get_tags(array(
                 <!-- 图片管理卡片 -->
                 <div class="sidebar-card">
                     <div class="card-header">
-                        <h3><?php _e('图片', 'advanced-markdown-editor'); ?></h3>
+                        <h3><?php esc_html_e('图片', 'advanced-markdown-editor'); ?></h3>
                         <button type="button" class="button button-small" id="open-media-library">
-                            <?php _e('媒体库', 'advanced-markdown-editor'); ?>
+                            <?php esc_html_e('媒体�?, 'advanced-markdown-editor'); ?>
                         </button>
                     </div>
                     <div class="card-content">
                         <div class="image-actions">
                             <button type="button" class="button button-small button-full" id="upload-image">
                                 <span class="dashicons dashicons-upload"></span>
-                                <?php _e('上传图片', 'advanced-markdown-editor'); ?>
+                                <?php esc_html_e('上传图片', 'advanced-markdown-editor'); ?>
                             </button>
                             <button type="button" class="button button-small button-full" id="insert-image-url">
                                 <span class="dashicons dashicons-admin-links"></span>
-                                <?php _e('插入图片链接', 'advanced-markdown-editor'); ?>
+                                <?php esc_html_e('插入图片链接', 'advanced-markdown-editor'); ?>
                             </button>
                         </div>
                         <div class="image-tips">
                             <p class="description">
-                                <?php _e('支持拖拽图片到编辑器区域快速插入', 'advanced-markdown-editor'); ?>
+                                <?php esc_html_e('支持拖拽图片到编辑器区域快速插�?, 'advanced-markdown-editor'); ?>
                             </p>
                             <p class="description">
-                                <strong><?php _e('快捷键:', 'advanced-markdown-editor'); ?></strong>
-                                Ctrl+U <?php _e('上传图片', 'advanced-markdown-editor'); ?>
+                                <strong><?php esc_html_e('快捷�?', 'advanced-markdown-editor'); ?></strong>
+                                Ctrl+U <?php esc_html_e('上传图片', 'advanced-markdown-editor'); ?>
                             </p>
                         </div>
                     </div>
@@ -319,24 +324,24 @@ $tags = get_tags(array(
                 <!-- 统计信息卡片 -->
                 <div class="sidebar-card">
                     <div class="card-header">
-                        <h3><?php _e('统计信息', 'advanced-markdown-editor'); ?></h3>
+                        <h3><?php esc_html_e('统计信息', 'advanced-markdown-editor'); ?></h3>
                     </div>
                     <div class="card-content">
                         <div class="stats-grid">
                             <div class="stat-item">
-                                <span class="stat-label"><?php _e('字数', 'advanced-markdown-editor'); ?></span>
+                                <span class="stat-label"><?php esc_html_e('字数', 'advanced-markdown-editor'); ?></span>
                                 <span class="stat-value" id="word-count-sidebar">0</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label"><?php _e('行数', 'advanced-markdown-editor'); ?></span>
+                                <span class="stat-label"><?php esc_html_e('行数', 'advanced-markdown-editor'); ?></span>
                                 <span class="stat-value" id="line-count-sidebar">0</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label"><?php _e('字符', 'advanced-markdown-editor'); ?></span>
+                                <span class="stat-label"><?php esc_html_e('字符', 'advanced-markdown-editor'); ?></span>
                                 <span class="stat-value" id="char-count-sidebar">0</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label"><?php _e('段落', 'advanced-markdown-editor'); ?></span>
+                                <span class="stat-label"><?php esc_html_e('段落', 'advanced-markdown-editor'); ?></span>
                                 <span class="stat-value" id="paragraph-count-sidebar">0</span>
                             </div>
                         </div>
@@ -347,11 +352,11 @@ $tags = get_tags(array(
     </div>
     
     <!-- 隐藏字段 -->
-    <input type="hidden" id="editor-nonce" value="<?php echo wp_create_nonce('wp_markdown_editor_nonce'); ?>">
+    <input type="hidden" id="editor-nonce" value="<?php echo wp_create_nonce('advanced_markdown_editor_nonce'); ?>">
     
     <!-- 传递标签数据给JavaScript -->
     <script type="text/javascript">
-        var availableTags = <?php echo json_encode(array_map(function($tag) {
+        var availableTags = <?php echo wp_json_encode(array_map(function($tag) {
             return $tag->name;
         }, $tags)); ?>;
     </script>
@@ -361,7 +366,7 @@ $tags = get_tags(array(
 <div id="new-category-modal" class="markdown-modal" style="display: none;">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><?php _e('新建分类', 'advanced-markdown-editor'); ?></h3>
+            <h3><?php esc_html_e('新建分类', 'advanced-markdown-editor'); ?></h3>
             <button type="button" class="modal-close">&times;</button>
         </div>
         <div class="modal-body">
@@ -369,7 +374,7 @@ $tags = get_tags(array(
                 <table class="form-table">
                     <tr>
                         <th scope="row">
-                            <label for="new-category-name"><?php _e('分类名称', 'advanced-markdown-editor'); ?></label>
+                            <label for="new-category-name"><?php esc_html_e('分类名称', 'advanced-markdown-editor'); ?></label>
                         </th>
                         <td>
                             <input type="text" id="new-category-name" name="category_name" class="regular-text" required>
@@ -377,20 +382,20 @@ $tags = get_tags(array(
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="new-category-slug"><?php _e('别名', 'advanced-markdown-editor'); ?></label>
+                            <label for="new-category-slug"><?php esc_html_e('别名', 'advanced-markdown-editor'); ?></label>
                         </th>
                         <td>
                             <input type="text" id="new-category-slug" name="category_slug" class="regular-text">
-                            <p class="description"><?php _e('别名是在URL中使用的版本，通常为小写，只包含字母、数字和连字符。', 'advanced-markdown-editor'); ?></p>
+                            <p class="description"><?php esc_html_e('别名是在URL中使用的版本，通常为小写，只包含字母、数字和连字符�?, 'advanced-markdown-editor'); ?></p>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="new-category-parent"><?php _e('父级分类', 'advanced-markdown-editor'); ?></label>
+                            <label for="new-category-parent"><?php esc_html_e('父级分类', 'advanced-markdown-editor'); ?></label>
                         </th>
                         <td>
                             <select id="new-category-parent" name="category_parent">
-                                <option value="0"><?php _e('无（顶级分类）', 'advanced-markdown-editor'); ?></option>
+                                <option value="0"><?php esc_html_e('无（顶级分类�?, 'advanced-markdown-editor'); ?></option>
                                 <?php foreach ($categories as $category): ?>
                                     <option value="<?php echo $category->term_id; ?>">
                                         <?php echo esc_html($category->name); ?>
@@ -401,7 +406,7 @@ $tags = get_tags(array(
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="new-category-description"><?php _e('描述', 'advanced-markdown-editor'); ?></label>
+                            <label for="new-category-description"><?php esc_html_e('描述', 'advanced-markdown-editor'); ?></label>
                         </th>
                         <td>
                             <textarea id="new-category-description" name="category_description" rows="3" class="large-text"></textarea>
@@ -409,8 +414,8 @@ $tags = get_tags(array(
                     </tr>
                 </table>
                 <p class="submit">
-                    <button type="submit" class="button button-primary"><?php _e('添加分类', 'advanced-markdown-editor'); ?></button>
-                    <button type="button" class="button modal-close"><?php _e('取消', 'advanced-markdown-editor'); ?></button>
+                    <button type="submit" class="button button-primary"><?php esc_html_e('添加分类', 'advanced-markdown-editor'); ?></button>
+                    <button type="button" class="button modal-close"><?php esc_html_e('取消', 'advanced-markdown-editor'); ?></button>
                 </p>
             </form>
         </div>
@@ -421,52 +426,52 @@ $tags = get_tags(array(
 <div id="markdown-help-modal" class="markdown-modal" style="display: none;">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><?php _e('Markdown语法帮助', 'advanced-markdown-editor'); ?></h3>
+            <h3><?php esc_html_e('Markdown语法帮助', 'advanced-markdown-editor'); ?></h3>
             <button type="button" class="modal-close">&times;</button>
         </div>
         <div class="modal-body">
             <div class="help-content">
-                <h4><?php _e('基本语法', 'advanced-markdown-editor'); ?></h4>
+                <h4><?php esc_html_e('基本语法', 'advanced-markdown-editor'); ?></h4>
                 <table class="help-table">
                     <tr>
                         <td><code># 标题 1</code></td>
-                        <td><?php _e('一级标题', 'advanced-markdown-editor'); ?></td>
+                        <td><?php esc_html_e('一级标�?, 'advanced-markdown-editor'); ?></td>
                     </tr>
                     <tr>
                         <td><code>## 标题 2</code></td>
-                        <td><?php _e('二级标题', 'advanced-markdown-editor'); ?></td>
+                        <td><?php esc_html_e('二级标题', 'advanced-markdown-editor'); ?></td>
                     </tr>
                     <tr>
                         <td><code>**粗体**</code></td>
-                        <td><strong><?php _e('粗体文本', 'advanced-markdown-editor'); ?></strong></td>
+                        <td><strong><?php esc_html_e('粗体文本', 'advanced-markdown-editor'); ?></strong></td>
                     </tr>
                     <tr>
                         <td><code>*斜体*</code></td>
-                        <td><em><?php _e('斜体文本', 'advanced-markdown-editor'); ?></em></td>
+                        <td><em><?php esc_html_e('斜体文本', 'advanced-markdown-editor'); ?></em></td>
                     </tr>
                     <tr>
                         <td><code>[链接](http://example.com)</code></td>
-                        <td><?php _e('创建链接', 'advanced-markdown-editor'); ?></td>
+                        <td><?php esc_html_e('创建链接', 'advanced-markdown-editor'); ?></td>
                     </tr>
                     <tr>
                         <td><code>![图片](image.jpg)</code></td>
-                        <td><?php _e('插入图片', 'advanced-markdown-editor'); ?></td>
+                        <td><?php esc_html_e('插入图片', 'advanced-markdown-editor'); ?></td>
                     </tr>
                     <tr>
                         <td><code>`代码`</code></td>
-                        <td><code><?php _e('内联代码', 'advanced-markdown-editor'); ?></code></td>
+                        <td><code><?php esc_html_e('内联代码', 'advanced-markdown-editor'); ?></code></td>
                     </tr>
                     <tr>
                         <td><code>> 引用</code></td>
-                        <td><?php _e('块引用', 'advanced-markdown-editor'); ?></td>
+                        <td><?php esc_html_e('块引�?, 'advanced-markdown-editor'); ?></td>
                     </tr>
                     <tr>
-                        <td><code>- 列表项</code></td>
-                        <td><?php _e('无序列表', 'advanced-markdown-editor'); ?></td>
+                        <td><code>- 列表�?/code></td>
+                        <td><?php esc_html_e('无序列表', 'advanced-markdown-editor'); ?></td>
                     </tr>
                     <tr>
-                        <td><code>1. 列表项</code></td>
-                        <td><?php _e('有序列表', 'advanced-markdown-editor'); ?></td>
+                        <td><code>1. 列表�?/code></td>
+                        <td><?php esc_html_e('有序列表', 'advanced-markdown-editor'); ?></td>
                     </tr>
                 </table>
             </div>

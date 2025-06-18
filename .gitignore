@@ -16,7 +16,7 @@ wp-config-sample.php
 # 数据库文件
 *.sql
 *.sql.gz
-*.sql.bz2
+*.sql.bz2/**
 
 # WordPress调试和错误日志
 debug.log
@@ -47,9 +47,6 @@ yarn.lock
 /build/
 /dist/
 /release/
-*.min.js
-*.min.css
-*.map
 
 # 开发工具配置
 .vscode/
@@ -141,16 +138,3 @@ $RECYCLE.BIN/
 *.key
 *.crt
 *.p12
-
-# 本项目特定
-# 如果你有特定的开发工具或临时文件，可以在这里添加 
-
-# WordPress 插件忽略文件
-
-# 排除所有文件
-*
-
-# 但包含这些重要文件
-!advanced-markdown-editor.php
-!readme.txt
-!README.md 

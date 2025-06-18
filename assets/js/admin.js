@@ -377,9 +377,9 @@
             
             // 创建媒体框架实例
             this.mediaFrame = wp.media({
-                title: wpMarkdownEditor.strings.selectImage,
+                title: advancedMarkdownEditor.strings.selectImage,
                 button: {
-                    text: wpMarkdownEditor.strings.insertImage
+                    text: advancedMarkdownEditor.strings.insertImage
                 },
                 multiple: false,
                 library: {
@@ -444,8 +444,8 @@
             // 创建FormData
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('action', 'upload_image_for_markdown');
-            formData.append('nonce', wpMarkdownEditor.nonce);
+            formData.append('action', 'advamaed_upload_image_for_markdown');
+            formData.append('nonce', advancedMarkdownEditor.nonce);
             
             // 显示上传状态
             const $status = $('#save-status');
@@ -453,7 +453,7 @@
             
             // 使用自定义的AJAX上传处理器
             $.ajax({
-                url: wpMarkdownEditor.ajaxUrl,
+                url: advancedMarkdownEditor.ajaxUrl,
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -621,17 +621,17 @@
             $submitBtn.text('创建中...').prop('disabled', true);
 
             const formData = {
-                action: 'create_new_category',
+                action: 'advamaed_create_new_category',
                 category_name: $('#new-category-name').val(),
                 category_slug: $('#new-category-slug').val(),
                 category_parent: $('#new-category-parent').val(),
                 category_description: $('#new-category-description').val(),
-                nonce: wpMarkdownEditor.nonce
+                nonce: advancedMarkdownEditor.nonce
             };
 
             const self = this;
             $.ajax({
-                url: wpMarkdownEditor.ajaxUrl,
+                url: advancedMarkdownEditor.ajaxUrl,
                 type: 'POST',
                 data: formData,
                 success: function(response) {
@@ -903,12 +903,12 @@
 
             const self = this;
             $.ajax({
-                url: wpMarkdownEditor.ajaxUrl,
+                url: advancedMarkdownEditor.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'get_markdown_post',
+                    action: 'advamaed_get_markdown_post',
                     post_id: postId,
-                    nonce: wpMarkdownEditor.nonce
+                    nonce: advancedMarkdownEditor.nonce
                 },
                 success: function(response) {
                     if (response.success) {
@@ -1001,10 +1001,10 @@
             
             const self = this;
             $.ajax({
-                url: wpMarkdownEditor.ajaxUrl,
+                url: advancedMarkdownEditor.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'save_markdown_post',
+                    action: 'advamaed_save_markdown_post',
                     post_id: postId,
                     title: title,
                     markdown_content: markdownContent,
@@ -1012,7 +1012,7 @@
                     status: postStatus,
                     categories: categories,
                     tags: tags,
-                    nonce: wpMarkdownEditor.nonce
+                    nonce: advancedMarkdownEditor.nonce
                 },
                 success: function(response) {
                     if (response.success) {
@@ -1060,16 +1060,16 @@
             
             switch(status) {
                 case 'saving':
-                    $saveStatus.addClass('saving').text(wpMarkdownEditor.strings.saving);
+                    $saveStatus.addClass('saving').text(advancedMarkdownEditor.strings.saving);
                     break;
                 case 'saved':
-                    $saveStatus.addClass('saved').text(wpMarkdownEditor.strings.saved);
+                    $saveStatus.addClass('saved').text(advancedMarkdownEditor.strings.saved);
                     setTimeout(function() {
                         $saveStatus.text('');
                     }, 3000);
                     break;
                 case 'error':
-                    $saveStatus.addClass('error').text(wpMarkdownEditor.strings.error);
+                    $saveStatus.addClass('error').text(advancedMarkdownEditor.strings.error);
                     break;
             }
         },
