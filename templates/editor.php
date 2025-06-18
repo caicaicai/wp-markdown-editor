@@ -9,8 +9,10 @@ if (!defined('ABSPATH')) {
 }
 
 // 获取文章ID
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is handled in the main plugin file
 $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
-$current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This is for page identification only
+$current_page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
 
 // 如果是新建文章页面，确保post_id为0
 if ($current_page === 'wp-markdown-editor-new') {
@@ -79,7 +81,7 @@ $tags = get_tags(array(
     </h1>
     
     <?php if (!$is_new_post): ?>
-    <a href="<?php echo admin_url('admin.php?page=wp-markdown-editor-new'); ?>" class="page-title-action">
+    <a href="<?php echo esc_url(admin_url('admin.php?page=wp-markdown-editor-new')); ?>" class="page-title-action">
         <?php esc_html_e('新建文章', 'advanced-markdown-editor'); ?>
     </a>
     <?php endif; ?>
@@ -88,7 +90,7 @@ $tags = get_tags(array(
     
     <div id="markdown-editor-container">
         <!-- 隐藏字段用于存储文章ID -->
-        <input type="hidden" id="post-id" value="<?php echo $is_new_post ? '' : $post_id; ?>">
+        <input type="hidden" id="post-id" value="<?php echo $is_new_post ? '' : esc_attr($post_id); ?>">
         
         <div class="editor-header<?php echo (($post_status === 'publish' || $post_status === 'private') && !$is_new_post) ? ' published' : ''; ?>">
             <div class="title-section">
@@ -239,9 +241,9 @@ $tags = get_tags(array(
                                     foreach ($categories as $category) {
                                         if ($category->parent == $parent_id) {
                                             $checked = in_array($category->term_id, $post_categories) ? 'checked' : '';
-                                            $tree .= '<div class="category-tree-item" data-level="' . $level . '">';
+                                            $tree .= '<div class="category-tree-item" data-level="' . esc_attr($level) . '">';
                                             $tree .= '<label class="category-label">';
-                                            $tree .= '<input type="checkbox" name="post_categories[]" value="' . $category->term_id . '" ' . $checked . '>';
+                                            $tree .= '<input type="checkbox" name="post_categories[]" value="' . esc_attr($category->term_id) . '" ' . $checked . '>';
                                             $tree .= '<span class="category-name">' . esc_html($category->name) . '</span>';
                                             $tree .= '</label>';
                                             
@@ -257,6 +259,7 @@ $tags = get_tags(array(
                                     return $tree;
                                 }
                                 
+                                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                 echo advamaed_build_category_tree($categories, 0, $post_categories);
                                 ?>
                             <?php else: ?>
@@ -370,7 +373,7 @@ $tags = get_tags(array(
     </div>
     
     <!-- 隐藏字段 -->
-    <input type="hidden" id="editor-nonce" value="<?php echo wp_create_nonce('advanced_markdown_editor_nonce'); ?>">
+    <input type="hidden" id="editor-nonce" value="<?php echo esc_attr(wp_create_nonce('advanced_markdown_editor_nonce')); ?>">
     
     <!-- 传递标签数据给JavaScript -->
     <script type="text/javascript">
@@ -403,13 +406,13 @@ $tags = get_tags(array(
                     <select id="category-parent" name="category_parent">
                         <option value="0"><?php esc_html_e('无（顶级分类）', 'advanced-markdown-editor'); ?></option>
                         <?php
-                        $categories = get_categories(array('hide_empty' => false));
-                        foreach ($categories as $category) {
-                            echo '<option value="' . $category->term_id . '">' . esc_html($category->name) . '</option>';
+                        $modal_categories = get_categories(array('hide_empty' => false));
+                        foreach ($modal_categories as $category) {
+                            echo '<option value="' . esc_attr($category->term_id) . '">' . esc_html($category->name) . '</option>';
                         }
                         ?>
                     </select>
-                    <p class="description"><?php esc_html_e('别名是在URL中使用的版本，通常为小写，只包含字母、数字和连字符。', 'advanced-markdown-editor'); ?></p>
+                    <p class="description"><?php esc_html_e('选择父级分类，留空为顶级分类。', 'advanced-markdown-editor'); ?></p>
                 </div>
                 <div class="form-group">
                     <label for="category-description"><?php esc_html_e('描述', 'advanced-markdown-editor'); ?></label>

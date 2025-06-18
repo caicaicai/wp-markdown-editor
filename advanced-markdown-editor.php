@@ -205,7 +205,7 @@ class ADVAMAED_Markdown_Editor {
      */
     public function markdown_editor_page() {
         $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
-        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+        $current_page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
         
         // 如果是新建文章页面，不需要nonce验证
         if ($current_page === 'wp-markdown-editor-new') {
@@ -213,7 +213,7 @@ class ADVAMAED_Markdown_Editor {
         }
         // 验证nonce用于编辑现有文章
         elseif ($post_id && (!isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'edit_markdown_post_' . $post_id))) {
-            wp_die(__('安全验证失败', 'advanced-markdown-editor'));
+            wp_die(esc_html__('安全验证失败', 'advanced-markdown-editor'));
         }
         
         $post = null;
@@ -221,7 +221,7 @@ class ADVAMAED_Markdown_Editor {
         if ($post_id) {
             $post = get_post($post_id);
             if (!$post || !current_user_can('edit_post', $post_id)) {
-                wp_die(__('您没有权限编辑此文章。', 'advanced-markdown-editor'));
+                wp_die(esc_html__('您没有权限编辑此文章。', 'advanced-markdown-editor'));
             }
         }
         
@@ -234,12 +234,12 @@ class ADVAMAED_Markdown_Editor {
     public function save_markdown_post() {
         // 验证nonce
         if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'advanced_markdown_editor_nonce')) {
-            wp_die(__('安全验证失败', 'advanced-markdown-editor'));
+            wp_die(esc_html__('安全验证失败', 'advanced-markdown-editor'));
         }
         
         // 检查权限
         if (!current_user_can('edit_posts')) {
-            wp_die(__('权限不足', 'advanced-markdown-editor'));
+            wp_die(esc_html__('权限不足', 'advanced-markdown-editor'));
         }
         
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
@@ -269,7 +269,7 @@ class ADVAMAED_Markdown_Editor {
         // 处理标签
         $tags = array();
         if (isset($_POST['tags']) && is_array($_POST['tags'])) {
-            $tags = array_map('sanitize_text_field', $_POST['tags']);
+            $tags = array_map('sanitize_text_field', wp_unslash($_POST['tags']));
             $tags = array_filter($tags, function($tag) {
                 return !empty(trim($tag));
             });
@@ -285,7 +285,7 @@ class ADVAMAED_Markdown_Editor {
         if ($post_id) {
             // 检查编辑权限
             if (!current_user_can('edit_post', $post_id)) {
-                wp_send_json_error(__('您没有权限编辑此文章', 'advanced-markdown-editor'));
+                wp_send_json_error(esc_html__('您没有权限编辑此文章', 'advanced-markdown-editor'));
                 return;
             }
             
@@ -359,14 +359,14 @@ class ADVAMAED_Markdown_Editor {
     public function get_markdown_post() {
         // 验证nonce
         if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'advanced_markdown_editor_nonce')) {
-            wp_die(__('安全验证失败', 'advanced-markdown-editor'));
+            wp_die(esc_html__('安全验证失败', 'advanced-markdown-editor'));
         }
         
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
         $post = get_post($post_id);
         
         if (!$post || !current_user_can('edit_post', $post_id)) {
-            wp_send_json_error(__('文章不存在或权限不足', 'advanced-markdown-editor'));
+            wp_send_json_error(esc_html__('文章不存在或权限不足', 'advanced-markdown-editor'));
         }
         
         $markdown_content = get_post_meta($post_id, '_markdown_content', true);
@@ -384,12 +384,12 @@ class ADVAMAED_Markdown_Editor {
     public function create_new_category() {
         // 验证nonce
         if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'advanced_markdown_editor_nonce')) {
-            wp_die(__('安全验证失败', 'advanced-markdown-editor'));
+            wp_die(esc_html__('安全验证失败', 'advanced-markdown-editor'));
         }
         
         // 检查权限
         if (!current_user_can('manage_categories')) {
-            wp_send_json_error(__('您没有权限创建分类', 'advanced-markdown-editor'));
+            wp_send_json_error(esc_html__('您没有权限创建分类', 'advanced-markdown-editor'));
             return;
         }
         
@@ -458,22 +458,22 @@ class ADVAMAED_Markdown_Editor {
     public function upload_image_for_markdown() {
         // 验证nonce
         if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'advanced_markdown_editor_nonce')) {
-            wp_die(__('安全验证失败', 'advanced-markdown-editor'));
+            wp_die(esc_html__('安全验证失败', 'advanced-markdown-editor'));
         }
         
         // 检查权限
         if (!current_user_can('upload_files')) {
-            wp_send_json_error(__('您没有权限上传文件', 'advanced-markdown-editor'));
+            wp_send_json_error(esc_html__('您没有权限上传文件', 'advanced-markdown-editor'));
             return;
         }
         
         // 检查是否有文件上传
         if (empty($_FILES['file'])) {
-            wp_send_json_error(__('没有选择文件', 'advanced-markdown-editor'));
+            wp_send_json_error(esc_html__('没有选择文件', 'advanced-markdown-editor'));
             return;
         }
         
-        $file = isset($_FILES['file']) ? $_FILES['file'] : null;
+        $file = isset($_FILES['file']) ? wp_unslash($_FILES['file']) : null;
         
         // 检查文件类型
         $allowed_types = array('image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp');
