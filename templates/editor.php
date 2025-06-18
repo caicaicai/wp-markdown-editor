@@ -10,10 +10,11 @@ if (!defined('ABSPATH')) {
 
 // 获取文章ID
 $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
+$current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
 
-// 验证nonce用于编辑现有文章
-if ($post_id && (!isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'edit_markdown_post_' . $post_id))) {
-    wp_die(__('安全验证失败', 'advanced-markdown-editor'));
+// 如果是新建文章页面，确保post_id为0
+if ($current_page === 'wp-markdown-editor-new') {
+    $post_id = 0;
 }
 
 $is_new_post = $post_id === 0;
@@ -78,7 +79,7 @@ $tags = get_tags(array(
     </h1>
     
     <?php if (!$is_new_post): ?>
-    <a href="<?php echo admin_url('admin.php?page=advanced-markdown-editor'); ?>" class="page-title-action">
+    <a href="<?php echo admin_url('admin.php?page=wp-markdown-editor-new'); ?>" class="page-title-action">
         <?php esc_html_e('新建文章', 'advanced-markdown-editor'); ?>
     </a>
     <?php endif; ?>

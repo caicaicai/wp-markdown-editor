@@ -205,11 +205,17 @@ class ADVAMAED_Markdown_Editor {
      */
     public function markdown_editor_page() {
         $post_id = isset($_GET['post']) ? intval($_GET['post']) : 0;
+        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
         
+        // 如果是新建文章页面，不需要nonce验证
+        if ($current_page === 'wp-markdown-editor-new') {
+            $post_id = 0; // 确保是新建文章
+        }
         // 验证nonce用于编辑现有文章
-        if ($post_id && (!isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'edit_markdown_post_' . $post_id))) {
+        elseif ($post_id && (!isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'edit_markdown_post_' . $post_id))) {
             wp_die(__('安全验证失败', 'advanced-markdown-editor'));
         }
+        
         $post = null;
         
         if ($post_id) {
@@ -307,7 +313,7 @@ class ADVAMAED_Markdown_Editor {
             // 获取文章信息
             $post = get_post($result);
             $view_link = '';
-            $edit_link = admin_url('admin.php?page=wp-markdown-editor&post=' . $result);
+            $edit_link = wp_nonce_url(admin_url('admin.php?page=wp-markdown-editor&post=' . $result), 'edit_markdown_post_' . $result);
             
             if ($status === 'publish') {
                 $view_link = get_permalink($result);
@@ -572,7 +578,7 @@ class ADVAMAED_Markdown_Editor {
      */
     public function markdown_meta_box_callback($post) {
         $is_markdown = get_post_meta($post->ID, '_is_markdown_post', true);
-        $edit_link = admin_url('admin.php?page=wp-markdown-editor&post=' . $post->ID);
+        $edit_link = wp_nonce_url(admin_url('admin.php?page=wp-markdown-editor&post=' . $post->ID), 'edit_markdown_post_' . $post->ID);
         
         echo '<p>';
         if ($is_markdown) {
@@ -594,7 +600,7 @@ class ADVAMAED_Markdown_Editor {
      */
     public function add_markdown_edit_link($actions, $post) {
         if (current_user_can('edit_post', $post->ID)) {
-            $markdown_edit_link = admin_url('admin.php?page=wp-markdown-editor&post=' . $post->ID);
+            $markdown_edit_link = wp_nonce_url(admin_url('admin.php?page=wp-markdown-editor&post=' . $post->ID), 'edit_markdown_post_' . $post->ID);
             $actions['markdown_edit'] = '<a href="' . esc_url($markdown_edit_link) . '">' . esc_html__('Markdown编辑', 'advanced-markdown-editor') . '</a>';
         }
         return $actions;
