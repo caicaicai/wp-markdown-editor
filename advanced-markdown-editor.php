@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 // 定义插件常量
-define('ADVAMAED_VERSION', '1.0.0');
+define('ADVAMAED_VERSION', '1.1.0');
 define('ADVAMAED_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('ADVAMAED_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('ADVAMAED_PLUGIN_BASENAME', plugin_basename(__FILE__));
@@ -189,12 +189,12 @@ class ADVAMAED_Markdown_Editor {
                 'ajaxUrl' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('advanced_markdown_editor_nonce'),
                 'strings' => array(
-                    'saving' => __('保存中...', 'advanced-markdown-editor'),
-                    'saved' => __('已保存', 'advanced-markdown-editor'),
-                    'error' => __('保存失败', 'advanced-markdown-editor'),
-                    'selectImage' => __('选择图片', 'advanced-markdown-editor'),
-                    'insertImage' => __('插入图片', 'advanced-markdown-editor'),
-                    'uploadImage' => __('上传图片', 'advanced-markdown-editor'),
+                    'saving' => esc_html__('保存中...', 'advanced-markdown-editor'),
+                    'saved' => esc_html__('已保存', 'advanced-markdown-editor'),
+                    'error' => esc_html__('保存失败', 'advanced-markdown-editor'),
+                    'selectImage' => esc_html__('选择图片', 'advanced-markdown-editor'),
+                    'insertImage' => esc_html__('插入图片', 'advanced-markdown-editor'),
+                    'uploadImage' => esc_html__('上传图片', 'advanced-markdown-editor'),
                 )
             ));
         }
@@ -330,7 +330,7 @@ class ADVAMAED_Markdown_Editor {
                 'message' => $this->get_save_success_message($status, !$post_id)
             ));
         } else {
-            wp_send_json_error(__('文章保存失败', 'advanced-markdown-editor'));
+            wp_send_json_error(esc_html__('文章保存失败', 'advanced-markdown-editor'));
         }
     }
     
@@ -340,16 +340,16 @@ class ADVAMAED_Markdown_Editor {
     private function get_save_success_message($status, $is_new_post) {
         if ($status === 'publish') {
             return $is_new_post ? 
-                __('文章发布成功！', 'advanced-markdown-editor') : 
-                __('文章更新成功！', 'advanced-markdown-editor');
+                esc_html__('文章发布成功！', 'advanced-markdown-editor') : 
+                esc_html__('文章更新成功！', 'advanced-markdown-editor');
         } else if ($status === 'private') {
             return $is_new_post ? 
-                __('私有文章创建成功！', 'advanced-markdown-editor') : 
-                __('私有文章更新成功！', 'advanced-markdown-editor');
+                esc_html__('私有文章创建成功！', 'advanced-markdown-editor') : 
+                esc_html__('私有文章更新成功！', 'advanced-markdown-editor');
         } else {
             return $is_new_post ? 
-                __('草稿保存成功！', 'advanced-markdown-editor') : 
-                __('草稿更新成功！', 'advanced-markdown-editor');
+                esc_html__('草稿保存成功！', 'advanced-markdown-editor') : 
+                esc_html__('草稿更新成功！', 'advanced-markdown-editor');
         }
     }
     
@@ -400,20 +400,20 @@ class ADVAMAED_Markdown_Editor {
         
         // 验证分类名称
         if (empty($category_name)) {
-            wp_send_json_error(__('分类名称不能为空', 'advanced-markdown-editor'));
+            wp_send_json_error(esc_html__('分类名称不能为空', 'advanced-markdown-editor'));
             return;
         }
         
         // 检查分类名称是否已存在
         if (term_exists($category_name, 'category')) {
-            wp_send_json_error(__('分类名称已存在', 'advanced-markdown-editor'));
+            wp_send_json_error(esc_html__('分类名称已存在', 'advanced-markdown-editor'));
             return;
         }
         
         // 验证父级分类
         if ($category_parent > 0) {
             if (!term_exists($category_parent, 'category')) {
-                wp_send_json_error(__('父级分类不存在', 'advanced-markdown-editor'));
+                wp_send_json_error(esc_html__('父级分类不存在', 'advanced-markdown-editor'));
                 return;
             }
         }
@@ -435,7 +435,7 @@ class ADVAMAED_Markdown_Editor {
         );
         
         if (is_wp_error($term_result)) {
-            wp_send_json_error(__('分类创建失败: ', 'advanced-markdown-editor') . $term_result->get_error_message());
+            wp_send_json_error(esc_html__('分类创建失败: ', 'advanced-markdown-editor') . $term_result->get_error_message());
             return;
         }
         
@@ -448,7 +448,7 @@ class ADVAMAED_Markdown_Editor {
             'slug' => $term->slug,
             'parent' => $term->parent,
             'description' => $term->description,
-            'message' => __('分类创建成功', 'advanced-markdown-editor')
+            'message' => esc_html__('分类创建成功', 'advanced-markdown-editor')
         ));
     }
     
@@ -473,19 +473,20 @@ class ADVAMAED_Markdown_Editor {
             return;
         }
         
-        $file = isset($_FILES['file']) ? wp_unslash($_FILES['file']) : null;
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- $_FILES is handled by wp_handle_upload
+        $file = $_FILES['file'];
         
         // 检查文件类型
         $allowed_types = array('image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp');
         if (!in_array($file['type'], $allowed_types)) {
-            wp_send_json_error(__('不支持的文件类型', 'advanced-markdown-editor'));
+            wp_send_json_error(esc_html__('不支持的文件类型', 'advanced-markdown-editor'));
             return;
         }
         
         // 检查文件大小 (默认最大5MB)
         $max_size = 5 * 1024 * 1024; // 5MB
         if ($file['size'] > $max_size) {
-            wp_send_json_error(__('文件大小超过限制', 'advanced-markdown-editor'));
+            wp_send_json_error(esc_html__('文件大小超过限制', 'advanced-markdown-editor'));
             return;
         }
         
@@ -526,7 +527,7 @@ class ADVAMAED_Markdown_Editor {
         $attachment_id = wp_insert_attachment($attachment, $file_path);
         
         if (is_wp_error($attachment_id)) {
-            wp_send_json_error(__('附件创建失败', 'advanced-markdown-editor'));
+            wp_send_json_error(esc_html__('附件创建失败', 'advanced-markdown-editor'));
             return;
         }
         
@@ -545,7 +546,7 @@ class ADVAMAED_Markdown_Editor {
             'filename' => basename($file_path),
             'alt' => get_post_meta($attachment_id, '_wp_attachment_image_alt', true),
             'title' => get_the_title($attachment_id),
-            'message' => __('图片上传成功', 'advanced-markdown-editor')
+            'message' => esc_html__('图片上传成功', 'advanced-markdown-editor')
         ));
     }
     

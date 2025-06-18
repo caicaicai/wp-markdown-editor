@@ -115,7 +115,7 @@
 ## 插件信息
 
 - **插件名称**: Advanced Markdown Editor
-- **版本**: 1.0.0
+- **版本**: 1.1.0
 - **作者**: xiaocaicai
 - **许可证**: GPL v2 or later
 - **最低WordPress版本**: 5.0

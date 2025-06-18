@@ -2,7 +2,7 @@
 # Copyright (C) 2024 Advanced Markdown Editor
 msgid ""
 msgstr ""
-"Project-Id-Version: Advanced Markdown Editor 1.0.0\n"
+"Project-Id-Version: Advanced Markdown Editor 1.1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/caicaicai/wp-markdown-editor\n"
 "POT-Creation-Date: 2024-01-01 12:00+0000\n"
 "PO-Revision-Date: 2024-01-01 12:00+0000\n"
